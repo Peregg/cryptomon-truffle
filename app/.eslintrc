@@ -1,0 +1,49 @@
+{
+  "parser": "babel-eslint",
+  "extends": ["react-app", "airbnb", "plugin:flowtype/recommended", "plugin:react/recommended", "prettier", "prettier/flowtype"],
+  "plugins": ["flowtype", "react", "import", "prettier"],
+  "rules": {
+    "max-len": ["error", { "code": 90, "ignoreUrls": true, "ignoreComments": true }],
+    "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
+    "no-unused-vars": ["error"],
+    "camelcase": 0,
+    "no-unused-expressions": 0,
+    "semi": ["error"],
+    "no-console": "error",
+    "import/prefer-default-export": "off",
+    "react/jsx-props-no-spreading": "off",
+    "jsx-a11y/click-events-have-key-events": 0,
+    "jsx-a11y/interactive-supports-focus": 0,
+    "jsx-a11y/no-noninteractive-element-to-interactive-role": 0,
+    "jsx-a11y/control-has-associated-label": "off",
+    "react/state-in-constructor": "off",
+    "jsx-a11y/anchor-is-valid": "off",
+    "jsx-a11y/label-has-associated-control": "off",
+    "react/static-property-placement": "off",
+    "react/jsx-max-props-per-line": [1, { "maximum": 1, "when": "always" }]
+  },
+  "env": {
+    "browser": true
+  },
+  "lint-staged": {
+    "*.js": [
+      "eslint src/**/*.js --fix"
+    ],
+    "*.jsx": [
+      "eslint src/**/*.jsx --fix"
+    ]
+  },
+  "settings": {
+    "import/resolver": {
+      "node": {
+        "paths": ["src"]
+      }
+    },
+    "flowtype": {
+      "onlyFilesWithFlowAnnotation": true
+    },
+    "react": {
+      "version": "detect"
+    }
+  }
+}

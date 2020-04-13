@@ -1,0 +1,64 @@
+{
+  "name": "app",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@babel/polyfill": "^7.8.7",
+    "@drizzle/react-components": "^1.5.1",
+    "@drizzle/react-plugin": "^1.5.1",
+    "@drizzle/store": "^1.5.1",
+    "react": "^16.11.0",
+    "react-dom": "^16.11.0",
+    "react-scripts": "^3.4.1"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "flow": "flow"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "lint-staged": {
+    "*.js": [
+      "eslint src/**/*.js --fix"
+    ],
+    "*.jsx": [
+      "eslint src/**/*.jsx --fix"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.8.4",
+    "@babel/core": "^7.9.0",
+    "@babel/preset-env": "^7.9.5",
+    "@babel/preset-react": "^7.9.4",
+    "babel-plugin-module-resolver": "^4.0.0",
+    "babel-plugin-namespace": "^0.2.2",
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb": "^18.1.0",
+    "eslint-import-resolver-alias": "^1.1.2",
+    "eslint-import-resolver-node": "^0.3.3",
+    "eslint-plugin-import": "^2.20.2",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-react": "^7.19.0",
+    "eslint-plugin-react-hooks": "^3.0.0",
+    "flow-bin": "^0.122.0",
+    "husky": "^4.2.5",
+    "lodash": "^4.17.15",
+    "node-sass": "^4.13.1"
+  }
+}
