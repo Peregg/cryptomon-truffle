@@ -7,16 +7,18 @@ import IndividualStat from 'fragments/IndividualStat';
 
 import type { CryptomonType } from 'types/CryptomonTypes';
 
-import bulbizarre from 'images/bulbizarre.png';
-import salameche from 'images/salameche.svg';
-import carapuce from 'images/carapuce.svg';
+import Salameche from 'fragments/crytpomons/Salameche';
+import Carapuce from 'fragments/crytpomons/Carapuce';
+import Bulbizarre from 'fragments/crytpomons/Bulbizarre';
+import Separator from 'fragments/Separator';
 
+import pokeball from 'images/pokeball.png';
 import 'styles/CryptomonCard.scss';
 
 const cryptomonSvg = {
-  bulbizarre,
-  salameche,
-  carapuce,
+  bulbizarre: Bulbizarre,
+  salameche: Salameche,
+  carapuce: Carapuce,
 };
 
 type Props = {|
@@ -45,19 +47,29 @@ const CryptomonCard = ({ cryptomon }: Props): React$Element<'div'> => {
     name,
   } = cryptomon;
 
-  const style = { backgroundColor: `#${dna.substr(2, 8)}` };
+  const style = { backgroundColor: `#${dna.substr(9, 8)}` };
+  const Cryptomon = cryptomonSvg[deburr(name).toLowerCase()];
 
   return (
     <div className='card-container'>
-      <img
-        className='card-image'
-        style={style}
-        src={cryptomonSvg[deburr(name).toLowerCase()]}
-        alt='lol'
-      />
-      <p className='card-title'>{name}</p>
-      <div className='card-stats'>
-        {renderIVs()}
+      <div className='card-image' style={style}>
+        <Cryptomon
+          primary={`#${dna.substr(2, 6)}`}
+        />
+      </div>
+      <div className='card-body'>
+        <img
+          className='card-body-picto'
+          src={pokeball}
+          alt='pokeball'
+        />
+        <div className='card-body-stats'>
+          <p className='card-title'>{name}</p>
+          <Separator />
+          <div className='card-stats'>
+            {renderIVs()}
+          </div>
+        </div>
       </div>
     </div>
   );

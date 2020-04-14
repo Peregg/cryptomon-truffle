@@ -1,0 +1,14 @@
+.fading-separator-container {
+  width: 100%;
+  margin: 5px;
+}
+
+.fading-separator {
+  display: block;
+  border: none;
+  color: white;
+  width: 100%;
+  height: 1px;
+  background: black;
+  background: -webkit-gradient(radial, 2% 30%, 0, 50% 50%, 110, from(#000), to(#fff))
+}

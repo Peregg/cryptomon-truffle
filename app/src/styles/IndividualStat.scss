@@ -1,20 +1,16 @@
 .stat-container {
-  width: calc(100% / 4);
+  margin-left: 14px;
+  width: 30px;
   height: 100%;
   display: flex;
-  justify-content: center;
-  align-items: center;
 
   & .stat-icon {
-    width: 50%;
     height: 100%;
   }
 
   & .stat-value {
-    width: 50%;
     height: 100%;
+    font-size: 12px;
     display: flex;
-    justify-content: center;
-    align-items: center;
   }
 }

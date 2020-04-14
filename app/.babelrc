@@ -23,6 +23,7 @@
           "styles": "./src/styles",
           "images": "./src/images",
           "fragments": "./src/fragments",
+          "utils": "./src/utils",
           "src": "./src",
           "extensions": [".js", ".jsx", ".json"]
         }
