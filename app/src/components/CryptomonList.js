@@ -4,26 +4,24 @@ import React, {
   useState,
   useEffect,
   useContext,
-  useReducer,
 } from "react";
-import Web3 from "web3";
 import { DrizzleContext } from "@drizzle/react-plugin";
 
 import CryptomonCard from 'fragments/CryptomonCard';
 
-import cryptomonReducer, { initialState } from 'reducers/cryptomonsReducer';
-import { getUserCryptomon } from 'actions/cryptomonsActions';
+import { getUserCryptomon, catchCryptomon } from 'actions/cryptomonsActions';
+import { getCryptomonMiddleware, catchCryptomonMiddleware } from 'middlewares/cryptomonMiddlewares';
 import useCryptomonsMiddleware from 'hooks/useCryptomonsMiddleware';
 
-import cryptomonDB from 'db/CryptomonsDB';
+import { Store } from 'store';
 
 import logo from "images/logo.png";
 import 'styles/CryptomonList.scss';
 
 
 const CryptomonList = (): React$Element<'div'> => {
-  const { drizzle, drizzleState } = useContext(DrizzleContext.Context);
-
+  const { drizzleState } = useContext(DrizzleContext.Context);
+  const [{ cryptomons }, dispatch] = useContext(Store);
   const [account, setActiveAccount] = useState('');
 
   const handleMetamaskChange = (accounts) => {
@@ -36,42 +34,27 @@ const CryptomonList = (): React$Element<'div'> => {
 
     account === '' && setActiveAccount(drizzleState.accounts[0]);
     ethereum.on('accountsChanged', handleMetamaskChange);
+    // eslint-disable-next-line
   }, [account, drizzleState.accounts]);
-
-  const [{ cryptomons, status }, dispatch] = useReducer(cryptomonReducer, initialState);
 
   useEffect(() => {
     cryptomons && !(cryptomons.length > 0) && dispatch(getUserCryptomon());
   })
 
-  useCryptomonsMiddleware(status, dispatch, { account });
+  useCryptomonsMiddleware({ status: 'cryptomonsStatus', account, type: 'get' }, getCryptomonMiddleware);
 
-  const catchCryptomon = async () => {
-    // @TODO : convertir en action/hook/reducer
-    const {
-      contracts: {
-        CryptomonContract,
-      },
-    } = drizzle;
+  useCryptomonsMiddleware({ status: 'catchCryptoStatus', account, type: 'post' }, catchCryptomonMiddleware);
 
-    const {
-      name,
-      _type,
-      health,
-      attack,
-      defense,
-      speed,
-    } = cryptomonDB[Math.floor(Math.random() * 3) + 1] || cryptomonDB[0];
-    const dna = await Web3.utils.keccak256(Web3.utils.randomHex(16));
-    const gas = await CryptomonContract.methods.catchCryptomon(name, _type, dna, health, attack, defense, speed).estimateGas();
+  const handleCatchCryptomon = () => {
+    console.log('kk');
 
-    await CryptomonContract.methods.catchCryptomon(name, _type, dna, health, attack, defense, speed).send({ from: account, gas });
-    dispatch(getUserCryptomon());
-  }
+    dispatch(catchCryptomon());
+  };
 
   const renderCryptomons = (): React$Element<typeof CryptomonCard>[] => {
     return cryptomons.map<React$Element<typeof CryptomonCard>>((cryptomon) => (
       <CryptomonCard
+        key={cryptomons.id}
         cryptomon={cryptomon}
       />
     ));
@@ -97,7 +80,7 @@ const CryptomonList = (): React$Element<'div'> => {
         <p>
           Cryptomon demo using truffle and drizzle, state managed by react hooks
         </p>
-        <button onClick={catchCryptomon}>
+        <button onClick={handleCatchCryptomon}>
           Catch a cryptomon
         </button>
         {cryptomons && cryptomons.length > 0 && (

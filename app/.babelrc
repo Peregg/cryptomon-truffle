@@ -24,7 +24,8 @@
           "images": "./src/images",
           "fragments": "./src/fragments",
           "utils": "./src/utils",
-          "src": "./src",
+          "middlewares": "./src/middlewares",
+          "store": "./src/store.js",
           "extensions": [".js", ".jsx", ".json"]
         }
       }
