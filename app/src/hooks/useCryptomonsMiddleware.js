@@ -1,62 +1,23 @@
 // @flow
 
-import { useContext, useEffect } from 'react';
-
-import {
-  getUserCryptomonSuccess,
-  getUserCryptomonFailure,
-  type CryptomonActionType,
-} from 'actions/cryptomonsActions';
+import { useEffect, useContext } from 'react';
 import { DrizzleContext } from "@drizzle/react-plugin";
+import { Store } from 'store';
 
-export default async (status: string, next: (CryptomonActionType) => void, { account }: { account: string }) => {
+import type { ActionType } from 'store';
+
+export default async (payload: Object, middleware: (payload: Object, next: () => ActionType) => Promise<*>) => {
   const {
     drizzle: {
-      contracts: {
-        CryptomonContract,
-      },
-    }
+      contracts,
+    },
   } = useContext(DrizzleContext.Context);
-
+  const [store, dispatch] = useContext(Store);
 
   useEffect(
     () => {
-  const middleware = async () => {
-    try {
-      const rawCryptomons = await CryptomonContract.methods.getMyCryptomons().call({ from: account });
-
-      const myCryptomons = rawCryptomons.map(({
-        _id: id,
-        name,
-        _type: type,
-        tamer,
-        dna,
-        level,
-        health,
-        attack,
-        defense,
-        speed,
-      }) => ({
-        id,
-        name,
-        type,
-        tamer,
-        dna,
-        level,
-        health,
-        attack,
-        defense,
-        speed,
-      }));
-
-      next(getUserCryptomonSuccess(myCryptomons));
-    } catch (error) {
-      next(getUserCryptomonFailure(error.message));
-    }
-  }
-      status !== 'default' && middleware();
-    },
+      store[payload.status] === 'loading' && middleware({ ...contracts, ...payload }, dispatch);
     // eslint-disable-next-line
-    [status]
+    },
   )
 }
