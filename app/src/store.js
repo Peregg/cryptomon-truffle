@@ -6,16 +6,45 @@ import React, {
   createContext,
 } from 'react';
 
-import cryptomonsReducer, { initialState as initialCryptomonsState } from 'reducers/cryptomonsReducer';
+import cryptomonsReducer, {
+  initialState as initialCryptomonsState,
+  type CryptomonStateType,
+} from 'reducers/cryptomonsReducer';
+import activeAccountReducer, {
+  initialState as initialActiveAccountState,
+  type ActiveAccountStateType,
+} from 'reducers/activeAccountReducer';
+import userReducer, {
+  initialState as initialUserState,
+  type UserStateType,
+} from 'reducers/userReducer';
 
-import type { CryptomonActionType } from 'actions/cryptomonsActions';
+import type { CryptomonActionType, CryptomonActionEnumType } from 'actions/cryptomonsActions';
+import type { ActiveAccountType } from 'actions/activeAccountActions';
+import type { UserActionType, UserActionEnumType } from 'actions/userActions';
+import type { ReducerType } from 'types/reducerTypes';
 
 export type ActionType =
-  | CryptomonActionType;
+  | UserActionType
+  | CryptomonActionType
+  | ActiveAccountType;
 
-const reducers = (state, { type, payload }) => {
-  const combinedReducers = {
+type CombinedReducerStateType = {
+  ...CryptomonStateType,
+  ...ActiveAccountStateType,
+  ...UserStateType,
+};
+
+type ActionEnumsType =
+| CryptomonActionEnumType
+| UserActionEnumType
+| 'SET_ACTIVE_ACCOUNT';
+
+const reducers = (state, { type, payload }: ActionType) => {
+  const combinedReducers: Object = {
+    ...userReducer,
     ...cryptomonsReducer,
+    ...activeAccountReducer,
   };
 
   return combinedReducers[type](state, { type, payload });
@@ -23,6 +52,8 @@ const reducers = (state, { type, payload }) => {
 
 const init = {
   ...initialCryptomonsState,
+  ...initialActiveAccountState,
+  ...initialUserState,
 };
 
 export const Store = createContext<Object>(reducers);
@@ -33,6 +64,7 @@ type Props = {|
 
 export const StoreProvider = (props: Props) => {
   const [state, dispatch] = useReducer(reducers, init);
+  // console.log(state);
 
   return (
     <Store.Provider value={[state, dispatch]}>

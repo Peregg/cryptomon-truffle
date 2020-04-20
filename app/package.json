@@ -59,6 +59,7 @@
     "flow-bin": "^0.122.0",
     "husky": "^4.2.5",
     "lodash": "^4.17.15",
-    "node-sass": "^4.13.1"
+    "node-sass": "^4.13.1",
+    "react-router-dom": "^5.1.2"
   }
 }

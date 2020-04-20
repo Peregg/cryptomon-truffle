@@ -25,6 +25,8 @@
           "fragments": "./src/fragments",
           "utils": "./src/utils",
           "middlewares": "./src/middlewares",
+          "router": "./src/router",
+          "api": "./src/api",
           "store": "./src/store.js",
           "extensions": [".js", ".jsx", ".json"]
         }

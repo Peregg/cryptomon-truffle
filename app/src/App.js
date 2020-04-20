@@ -1,35 +1,50 @@
-import React from "react";
+import React, {
+  useContext,
+  useEffect,
+} from "react";
+import {
+  BrowserRouter as Router,
+} from 'react-router-dom';
 import { DrizzleContext } from "@drizzle/react-plugin";
-import { Drizzle } from "@drizzle/store";
 
-import drizzleOptions from "./drizzleOptions";
-import { StoreProvider } from 'store';
+import { setActiveAccount } from 'actions/activeAccountActions';
+import { getUserCryptomon } from 'actions/cryptomonsActions';
+import { getUserProfile } from 'middlewares/userApiMiddleware';
 
-import CryptomonList from "components/CryptomonList";
+import { StoreProvider, Store } from 'store';
+import MainRouter from 'router';
 
-import "./App.css";
+import Header from 'components/Header';
 
-const drizzle = new Drizzle(drizzleOptions);
+// import { get } from 'actions/activeAccountActions';
+
+import "styles/App.scss";
 
 const App = () => {
+  const { drizzleState } = useContext(DrizzleContext.Context);
+  const [{ activeAccount }, dispatch] = useContext(Store);
+
+  const handleMetamaskChange = (accounts) => {
+    console.count('api call to usre')
+    dispatch(setActiveAccount(accounts[0]));
+    dispatch(getUserCryptomon());
+    getUserProfile({ activeAccount: accounts[0] }, dispatch);
+  }
+
+  useEffect(() => {
+    const { ethereum } = window;
+    console.log('eth addr', ethereum.selectedAddress);
+
+    activeAccount === '' && dispatch(setActiveAccount(ethereum.selectedAddress));
+    ethereum.on('accountsChanged', handleMetamaskChange);
+    // eslint-disable-next-line
+  }, []);
+
   return (
-    <DrizzleContext.Provider drizzle={drizzle}>
-      <DrizzleContext.Consumer>
-        {drizzleContext => {
-          const { initialized } = drizzleContext;
-
-          if (!initialized) {
-            return "Loading..."
-          }
-
-          return (
-            <StoreProvider>
-              <CryptomonList />
-            </StoreProvider>
-          )
-        }}
-      </DrizzleContext.Consumer>
-    </DrizzleContext.Provider>
+    <Router>
+      <Header />
+      <MainRouter />
+    </Router>
   );
 }
 

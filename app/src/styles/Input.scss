@@ -1,0 +1,48 @@
+.input-container.active .input-label {
+  &:not(.fixed) {
+    transform: translate(0, -20px);
+  }
+  background-color: white;
+  z-index: 1;
+}
+
+.input-container {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  height: 42px;
+  position: relative;
+
+  & .input-label {
+    &:not(.fixed) {
+      top: 10px;
+      transition: all 0.2s ease-in-out;
+    }
+    font-weight: 500;
+    display: flex;
+    justify-content: center;
+    position: absolute;
+    align-items: center;
+    left: 5%;
+    top: -11px;
+  }
+
+  .input-label.fixed {
+    background-color: white;
+    z-index: 2;
+  }
+
+  & .input-body {
+    z-index: 1;
+    background: transparent;
+    flex: 1;
+    margin: 0 10px;
+    border: 1px solid #8080804a;
+    border-radius: 5px;
+    outline: none;
+    &:focus {
+      border: 2px solid #8b93cce3;
+      z-index: 0;
+    }
+  }
+}
