@@ -3,6 +3,7 @@ $grey-100: #F8F9FA;
 .card-container {
   position: relative;
   width: 200px;
+  height: 300px;
   margin: 30px;
   display: flex;
   flex-direction: column;
@@ -26,23 +27,23 @@ $grey-100: #F8F9FA;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: width 0.2s ease-in, height 0.2s ease-in;
+    transition: transform .33s cubic-bezier(.35,0,.15,1);
 
     &:hover {
-      width: calc(185px + 5px);
-      height: calc(212px + 5px);
+      transform: scale(1.03);
     }
   }
 
   & .card-body {
-    width: 100%;
+    width: 115%;
     display: flex;
+    margin: 10px;
     & .card-body-picto {
       width: 25px;
       height: 25px;
       position: relative;
       top: 24%;
-      left: 3%;
+      left: 2%;
     }
 
     & .card-body-stats {

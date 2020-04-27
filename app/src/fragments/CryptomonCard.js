@@ -36,6 +36,7 @@ const CryptomonCard = ({ cryptomon }: Props): React$Element<'div'> => {
 
     return stats.map<React$Element<typeof IndividualStat>>((key) => (
       <IndividualStat
+        key={key}
         type={key}
         value={cryptomon[key]}
       />

@@ -16,7 +16,15 @@ import type { ActionType } from 'store';
 
 export const getCryptomonMiddleware = async (payload: Object, next: (CryptomonActionType) => ActionType) => {
   try {
-    const rawCryptomons = await payload.CryptomonContract.methods.getMyCryptomons().call({ from: payload.account });
+    const {
+      drizzle: {
+        contracts: {
+          CryptomonContract,
+        },
+      },
+    } = payload;
+
+    const rawCryptomons = await CryptomonContract.methods.getMyCryptomons().call({ from: payload.account });
 
     const myCryptomons = rawCryptomons.map(({
       _id: id,
@@ -51,6 +59,13 @@ export const getCryptomonMiddleware = async (payload: Object, next: (CryptomonAc
 export const catchCryptomonMiddleware = async (payload: Object, next: (CryptomonActionType) => ActionType) => {
   try {
     const {
+      drizzle: {
+        contracts: {
+          CryptomonContract,
+        },
+      },
+    } = payload;
+    const {
       name,
       _type,
       health,
@@ -60,9 +75,9 @@ export const catchCryptomonMiddleware = async (payload: Object, next: (Cryptomon
     } = cryptomonDB[Math.floor(Math.random() * 3) + 1] || cryptomonDB[0];
 
     const dna = await Web3.utils.keccak256(Web3.utils.randomHex(16));
-    const gas = await payload.CryptomonContract.methods.catchCryptomon(name, _type, dna, health, attack, defense, speed).estimateGas();
+    const gas = await CryptomonContract.methods.catchCryptomon(name, _type, dna, health, attack, defense, speed).estimateGas();
 
-    await payload.CryptomonContract.methods.catchCryptomon(name, _type, dna, health, attack, defense, speed).send({ from: payload.account, gas });
+    await CryptomonContract.methods.catchCryptomon(name, _type, dna, health, attack, defense, speed).send({ from: payload.account, gas });
     next(catchCryptomonSuccess())
     next(getUserCryptomon());
   } catch (error) {

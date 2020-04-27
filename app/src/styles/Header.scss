@@ -1,0 +1,78 @@
+.header {
+  justify-content: center;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 2rem 3.2rem;
+  position: relative;
+  z-index: 3;
+
+  & .header-logo {
+    height: 2rem;
+    align-items: center;
+    background-color: transparent;
+    box-sizing: border-box;
+    display: flex;
+    text-decoration: none;
+    transition: color .2s;
+    padding-bottom: .60rem;
+
+    & .logo {
+      box-sizing: border-box;
+      display: block;
+      height: 2rem;
+      margin: 1rem;
+    }
+
+    & .title {
+      color: black;
+      outline: none;
+      height: 2rem;
+    }
+  }
+
+  & .header-wallet {
+    align-items: center;
+    box-sizing: border-box;
+    display: flex;
+    margin: 0 1rem;
+
+    & .status-badge {
+      content: '';
+      border-radius: 50%;
+      box-sizing: border-box;
+      height: 1.2rem;
+    }
+
+    & > p {
+      font-size: .70rem;
+    }
+  }
+
+  & .header-nav {
+    align-items: center;
+    box-sizing: border-box;
+    color: #82817d;
+    display: flex;
+    justify-content: flex-end;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    flex: 1;
+
+    & > a {
+      text-transform: uppercase;
+      outline: none;
+      text-decoration: none;
+      color: #00000099;
+      font-weight: 700;
+      margin: 0 10px;
+
+      &:hover {
+        color: #e47d7d;
+      }
+    }
+  }
+}

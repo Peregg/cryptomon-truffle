@@ -8,15 +8,14 @@ import type { ActionType } from 'store';
 
 export default async (payload: Object, middleware: (payload: Object, next: () => ActionType) => Promise<*>) => {
   const {
-    drizzle: {
-      contracts,
-    },
+    drizzle,
+    drizzleState,
   } = useContext(DrizzleContext.Context);
   const [store, dispatch] = useContext(Store);
 
   useEffect(
     () => {
-      store[payload.status] === 'loading' && middleware({ ...contracts, ...payload }, dispatch);
+      store[payload.status] === 'loading' && middleware({ drizzle, drizzleState, ...payload }, dispatch);
     // eslint-disable-next-line
     },
   )

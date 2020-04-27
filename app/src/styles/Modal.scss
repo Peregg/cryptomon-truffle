@@ -1,0 +1,43 @@
+@import 'styles/Constants';
+
+.modal-overlay {
+  height: 100vh;
+  width: 100vw;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: #00000094;
+  z-index: 3;
+  visibility: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  & .modal-container {
+    width: $modal-width;
+    height: $modal-height;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgb(255, 255, 255);
+    border-radius: 5px;
+    transition: all .55s cubic-bezier(.35,0,.15,1);
+    opacity: 0;
+    backface-visibility: hidden;
+    transform: translateY(-50%);
+
+    & .modal-text {
+      display: flex;
+      flex-direction: column;
+    }
+  }
+}
+
+.modal-overlay.visible {
+  visibility: visible;
+}
+
+.modal-container.visible {
+  transform: translateY(0);
+  opacity: 1;
+}
