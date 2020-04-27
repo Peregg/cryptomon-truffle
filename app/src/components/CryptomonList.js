@@ -15,6 +15,8 @@ import { setActiveAccount } from 'actions/activeAccountActions';
 import { getCryptomonMiddleware, catchCryptomonMiddleware } from 'middlewares/cryptomonMiddlewares';
 import useCryptomonsMiddleware from 'hooks/useCryptomonsMiddleware';
 
+import wording from 'constants/wording';
+
 import { Store } from 'store';
 
 import 'styles/CryptomonList.scss';
@@ -45,20 +47,15 @@ const CryptomonList = (): React$Element<'div'> => {
   }
 
   return (
-    <div className="App">
-      <div className="section">
-        <h2>Active Account</h2>
-        <p>{activeAccount}</p>
-      </div>
-
-      <div className="section">
-        <h2>Cryptomon</h2>
-        <p>
-          Cryptomon demo using truffle and drizzle, state managed by react hooks
-        </p>
-        <Button handleClick={handleCatchCryptomon}>
-          Attrape un cryptomon !
-        </Button>
+    <div className='App'>
+      <div className='section'>
+        <div className='section-text-box'>
+          <h2>{wording.your_cryptomons}</h2>
+          <p>{wording.details_coming_soon}</p>
+          <Button handleClick={handleCatchCryptomon}>
+            {wording.catch_a_cryptomon}
+          </Button>
+        </div>
         {cryptomons && cryptomons.length > 0 && (
           <div className='list-container'>
             {renderCryptomons()}

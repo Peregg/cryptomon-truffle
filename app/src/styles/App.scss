@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Comic+Neue&display=swap');
+@import 'styles/Constants';
 
 body * {
   font-family: 'Comic Neue', cursive;
@@ -12,6 +13,18 @@ body * {
 
 .section {
   text-align: left;
-  max-width: 720px;
+  max-width: 1080px;
   margin: 4rem auto auto;
+
+  & .section-text-box {
+    text-align: center;
+
+      & > h2 {
+        font-size: 30px;
+      }
+  }
+}
+
+.yellow {
+  background-color: $yellow;
 }

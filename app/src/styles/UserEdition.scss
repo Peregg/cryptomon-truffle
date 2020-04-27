@@ -1,10 +1,68 @@
 .container {
-  height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
 
   & .input-container {
     margin: 1em;
+  }
+}
+
+.avatar-wrapper {
+	position: relative;
+	height: 80px;
+	width: 80px;
+	margin: 50px auto;
+	border-radius: 50%;
+	overflow: hidden;
+	box-shadow: 1px 1px 15px -5px black;
+	transition: all .3s ease;
+
+  &:hover {
+		transform: scale(1.05);
+	}
+
+  &:hover .profile-pic {
+		opacity: .25;
+  }
+
+  &:hover .upload-overlay {
+		opacity: .7;
+	}
+
+  .profile-pic {
+    height: 100%;
+		width: 100%;
+		transition: all .3s ease;
+  }
+
+  & .upload-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+	& .upload-button {
+		position: absolute;
+		top: 0; left: 0;
+		height: 100%;
+		width: 100%;
+  }
+
+  & .upload-input {
+    width: 80px;
+    height: 80px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    z-index: 3;
+    cursor: pointer;
   }
 }

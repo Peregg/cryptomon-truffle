@@ -1,0 +1,165 @@
+// @import "compass/css3";
+@import 'styles/Constants.scss';
+
+$pi:3.14;
+
+/* //config */
+$menu-items: 4;
+$open-distance: 105px;
+$opening-angle: 3.14 * 2;
+
+%goo {
+  filter:url('#shadowed-goo');
+}
+
+%ball {
+  background: $blue;
+  border-radius: 100%;
+  width: 80px;
+  height: 80px;
+  margin-left: -40px;
+  position: absolute;
+  top: 20px;
+  color: white;
+  text-align: center;
+  line-height: 80px;
+  transform: translate3d(0, 0, 0);
+  transition: transform ease-out 200ms;
+  position: absolute;
+  right: 0;
+}
+
+.avatar {
+  width: 80px;
+  position: absolute;
+  height: 80px;
+  overflow: hidden;
+  border-radius: inherit;
+  top: 0;
+  left: 0;
+  cursor: pointer;
+}
+
+.menu-open {
+  display: none;
+}
+
+.menu-item {
+  @extend %ball;
+}
+
+.cross {
+  $width: 25px;
+  $height: 3px;
+  width: $width;
+  height: $height;
+  background: white;
+  display: block;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-left: -$width / 2;
+  margin-top: -$height / 2;
+  transition: transform 200ms;
+}
+
+.sword {
+  height: 70px;
+  opacity: 1;
+  transition: height .15s ease-in, transform .15s ease-in, opacity .15s ease-in;
+  filter: invert(1);
+}
+
+$cross-spacing: 8px;
+
+.cross-1 {
+  display: none;
+}
+
+.cross-2 {
+  display: none;
+}
+
+.menu-open:checked+.menu-open-button {
+  .sword {
+    height: 0;
+    // transform: translate3d(0,0,0) rotate(180deg);
+    opacity: 0;
+  }
+
+  .cross-1 {
+    display: block;
+    transform: translate3d(0,0,0) rotate(45deg);
+  }
+
+  .cross-2 {
+    display: block;
+    transform: translate3d(0,0,0) rotate(-45deg);
+  }
+}
+
+.menu {
+  @extend %goo;
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  width: 650px;
+  height: 100px;
+  box-sizing: border-box;
+  font-size: 20px;
+  text-align: left;
+  margin: 15px;
+}
+
+.menu-item {
+  outline: none;
+
+  &:hover {
+    background: white;
+    color: $blue;
+  }
+
+  &:hover .avatar {
+    opacity: .8;
+  }
+
+  @for $i from 1 through $menu-items {
+    &:nth-child(#{$i+2}) {
+      transition-duration:180ms;
+    }
+  }
+}
+
+.menu-open-button {
+  @extend %ball;
+  z-index:2;
+  transition-timing-function: cubic-bezier(0.175, 0.885, 0.320, 1.275);
+  transition-duration: 400ms;
+  transform: scale(1.1,1.1) translate3d(0,0,0);
+  cursor: pointer;
+  position: absolute;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.menu-open-button:hover {
+  transform: scale(1.2,1.2) translate3d(0,0,0);
+}
+.menu-open:checked+.menu-open-button {
+  transition-timing-function: linear;
+  transition-duration: 200ms;
+  transform: scale(0.8,0.8) translate3d(0,0,0);
+}
+
+.menu-open:checked~.menu-item {
+  transition-timing-function: cubic-bezier(0.165, 0.840, 0.440, 1.000);
+  @for $i from 1 through $menu-items {
+
+    &:nth-child(#{$i+2}) {
+      transition-duration: 90ms+(100ms * $i);
+      transform: translate3d(-110px * $i, 0, 0);
+    }
+  }
+}
+

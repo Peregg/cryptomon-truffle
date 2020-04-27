@@ -13,8 +13,12 @@ import {
   updateUserFailure,
   type UserActionType,
 } from 'actions/userActions';
+import {
+  openModal,
+  type ModalActionType,
+} from 'actions/modalActions'
 
-const api = requestResolver('http://127.0.0.1:3001');
+const api = requestResolver('http://192.168.1.25:3001');
 
 export const getUserProfile = async ({ activeAccount }: { activeAccount: string }, dispatch: (UserActionType) => void) => {
   dispatch(getUser());
@@ -44,16 +48,18 @@ export const postUserProfile = async ({ activeAccount, nickname }: { activeAccou
   }
 }
 
-export const updateUserProfile = async ({ activeAccount, nickname }: { activeAccount: string, nickname: string }, dispatch: (UserActionType) => void) => {
+export const updateUserProfile = async ({ activeAccount, nickname, avatar }: { activeAccount: string, nickname: string, avatar: string }, dispatch: (UserActionType | ModalActionType) => void) => {
   dispatch(updateUser());
 
   try {
-    const { data } = await api.put('/user', { address: activeAccount, nickname });
+    const { data } = await api.put('/user', { address: activeAccount, nickname, avatar });
 
     if (data.error) {
       dispatch(updateUserFailure());
+    } else {
+      dispatch(updateUserSuccess(data.payload));
+      dispatch(openModal(1, nickname));
     }
-    return dispatch(updateUserSuccess(data.payload));
   } catch (error) {
     dispatch(updateUserFailure());
   }

@@ -1,0 +1,21 @@
+@import 'styles/Constants';
+
+.hook-banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: $yellow;
+  height: 600px;
+
+  & .hook-banner-text {
+    & .hook-banner-title {
+      font-size: 50px;
+      color: #00000099;
+    }
+
+    & .hook-banner-phrase {
+      color: #00000099;
+      font-size: 22px;
+    }
+  }
+}

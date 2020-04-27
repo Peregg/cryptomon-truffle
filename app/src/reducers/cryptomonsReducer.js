@@ -23,11 +23,11 @@ export const initialState = {
   catchCryptoStatus: 'default',
 };
 
-export type CryptomonStateType = {|
+export type CryptomonStateType = {
   cryptomonsStatus: string,
   catchCryptoStatus: string,
   cryptomons: CryptomonType[],
-|};
+};
 
 const defaultPayload = {
   payload: {

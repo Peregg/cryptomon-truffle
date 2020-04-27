@@ -18,33 +18,41 @@ import userReducer, {
   initialState as initialUserState,
   type UserStateType,
 } from 'reducers/userReducer';
+import modalReducer, {
+  initialState as initiaModalState,
+  type ModalState,
+} from 'reducers/modalReducer';
 
 import type { CryptomonActionType, CryptomonActionEnumType } from 'actions/cryptomonsActions';
 import type { ActiveAccountType } from 'actions/activeAccountActions';
 import type { UserActionType, UserActionEnumType } from 'actions/userActions';
+import type { ModalActionType, ModalEnumType } from 'actions/modalActions';
 import type { ReducerType } from 'types/reducerTypes';
 
 export type ActionType =
   | UserActionType
   | CryptomonActionType
-  | ActiveAccountType;
+  | ActiveAccountType
+  | ModalActionType;
 
-type CombinedReducerStateType = {
-  ...CryptomonStateType,
-  ...ActiveAccountStateType,
-  ...UserStateType,
-};
+type CombinedReducerStateType =
+  & CryptomonStateType
+  & ActiveAccountStateType
+  & UserStateType;
 
 type ActionEnumsType =
 | CryptomonActionEnumType
 | UserActionEnumType
+| ModalEnumType
 | 'SET_ACTIVE_ACCOUNT';
 
 const reducers = (state, { type, payload }: ActionType) => {
-  const combinedReducers: Object = {
+  // $FlowFixMe
+  const combinedReducers: ReducerType<CombinedReducerStateType, *> = {
     ...userReducer,
     ...cryptomonsReducer,
     ...activeAccountReducer,
+    ...modalReducer,
   };
 
   return combinedReducers[type](state, { type, payload });
@@ -54,6 +62,7 @@ const init = {
   ...initialCryptomonsState,
   ...initialActiveAccountState,
   ...initialUserState,
+  ...initiaModalState,
 };
 
 export const Store = createContext<Object>(reducers);

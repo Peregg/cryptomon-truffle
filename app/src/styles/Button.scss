@@ -1,3 +1,5 @@
+@import 'styles/Constants.scss';
+
 .button-container {
   border: none;
   margin: 15px;
@@ -7,7 +9,7 @@
   text-transform: uppercase;
   cursor: pointer;
   color: white;
-  background-color: #2196f3;
+  background-color: $blue;
   box-shadow: 0 0 4px #999;
   outline: none;
   background-position: center;
@@ -15,7 +17,7 @@
   font-weight: 700;
 
   &:hover {
-    background: #47a7f5 radial-gradient(circle, transparent 1%, #47a7f5 1%) center/15000%;
+    background: $blue-darker radial-gradient(circle, transparent 1%, $blue-darker 1%) center / 15000%;
   }
 
   &:active {

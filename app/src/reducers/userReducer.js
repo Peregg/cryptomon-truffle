@@ -14,9 +14,6 @@ import {
 
 import {
   STATUS_DEFAULT,
-  STATUS_LOADING,
-  STATUS_SUCCESS,
-  STATUS_FAILURE,
 } from 'constants/statusConstants';
 
 import type { UserActionType } from 'actions/userActions';
@@ -28,16 +25,19 @@ export const initialState = {
   getUserStatus: STATUS_DEFAULT,
   updateUserStatus: STATUS_DEFAULT,
   user: {
+    id: '',
     nickname: '',
+    address: '',
+    avatar: '',
   },
 };
 
-export type UserStateType = {|
+export type UserStateType = {
   postUserStatus: string,
   getUserStatus: string,
   updateUserStatus: string,
   user: UserType,
-|};
+};
 
 const defaultAction = {
   payload: {
@@ -47,61 +47,61 @@ const defaultAction = {
 };
 
 const userReducer: ReducerType<UserStateType, UserActionType> = {
-  [GET_USER]: (state, action = defaultAction) => {
+  [GET_USER]: (state, { payload } = defaultAction) => {
     return {
       ...state,
-      getUserStatus: status,
+      getUserStatus: payload.status,
     };
   },
   [GET_USER_SUCCESS]: (state, { payload } = defaultAction) => {
     return {
       ...state,
-      getUserStatus: status,
+      getUserStatus: payload.status,
       user: payload.user || defaultUser,
     };
   },
   [GET_USER_FAILURE]: (state, { payload } = defaultAction) => {
     return {
       ...state,
-      getUserStatus: status,
+      getUserStatus: payload.status,
     };
   },
   [POST_USER]: (state, { payload } = defaultAction) => {
     return {
       ...state,
-      postUserStatus: status,
+      postUserStatus: payload.status,
     };
   },
   [POST_USER_SUCCESS]: (state, { payload } = defaultAction) => {
     return {
       ...state,
-      postUserStatus: status,
+      postUserStatus: payload.status,
       user: payload.user || defaultUser,
     };
   },
   [POST_USER_FAILURE]: (state, { payload } = defaultAction) => {
     return {
       ...state,
-      postUserStatus: status,
+      postUserStatus: payload.status,
     };
   },
   [UPDATE_USER]: (state, { payload } = defaultAction) => {
     return {
       ...state,
-      updateUserStatus: status,
+      updateUserStatus: payload.status,
     };
   },
   [UPDATE_USER_SUCCESS]: (state, { payload } = defaultAction) => {
     return {
       ...state,
-      updateUserStatus: status,
+      updateUserStatus: payload.status,
       user: payload.user || defaultUser,
     };
   },
   [UPDATE_USER_FAILURE]: (state, { payload } = defaultAction) => {
     return {
       ...state,
-      updateUserStatus: status,
+      updateUserStatus: payload.status,
     };
   },
 };
