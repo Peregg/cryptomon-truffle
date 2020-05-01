@@ -12,17 +12,16 @@ import sword from 'images/individualStats/sword.png';
 import 'styles/BattleTracker.scss';
 
 const BattleTracker = () => {
-  const [{ activeAccount, user: { nickname, avatar = '' } }, dispatch] = useContext(Store);
-  const [sockets, setSockets] = useState([]);
+  const [{ activeAccount, user: { nickname, avatar = '' }, sockets, tamers }, dispatch] = useContext(Store);
   const [loading, setLoading] = useState(true);
   const history = useHistory();
-  const socketHandlers = new SocketHandlers(dispatch, history);
+  const socketHandlers = new SocketHandlers(dispatch, history, tamers);
 
   useEffect(() => {
-    socket.on('players', (players) => setSockets(players));
-    socket.on('attack', socketHandlers.attack);
-    nickname !== '' && socket.on('challenge', socketHandlers.challenge(nickname));
+    socket.on('players', socketHandlers.players);
+    nickname !== '' && socket.on('challenge', socketHandlers.challenge({ nickname, id: socket.id, address: activeAccount }));
     socket.on('challenge-accepted', socketHandlers.challengeAccepted);
+    socket.on('change-room', (arenaId) => socket.emit('change-room', arenaId));
     socket.on('challenge-refused', socketHandlers.challengeRefused);
   }, [nickname]);
 
@@ -37,22 +36,23 @@ const BattleTracker = () => {
   useEffect(() => {
     console.count('loading')
     console.log(`loading`, sockets)
-    if (sockets.length > 0) {
+    if (sockets) {
       setLoading(false);
     }
-    socket.on('player-leave', (players) => setSockets(players));
-  }, [sockets.length]);
+    socket.on('player-leave', socketHandlers.players);
+  }, [sockets]);
 
   const renderTrackerItems = () => {
-
     if (loading) {
       return 'Chargement...';
     }
+    console.log(sockets.filter(({id}) => id !== socket.id));
+
     return sockets
       .filter(({ id }) => id !== socket.id)
-      .map<React$Element<'button'>>(({ address, id }) => (
-        <button key={id} onClick={() => socket.emit('challenge', { id: socket.id, nickname }, id)} className='menu-item'>
-          <img className='avatar' src={avatar} alt={nickname || address} />
+      .map<React$Element<'button'>>(({ address, id, avatar: playerAvatar, nickname: playerNickname }) => (
+        <button key={id} onClick={() => socket.emit('challenge', { id: socket.id, nickname, address, avatar }, id)} className='menu-item'>
+          <img className='avatar' src={playerAvatar} alt={playerNickname || address} />
         </button>
       ));
   }
@@ -69,7 +69,7 @@ const BattleTracker = () => {
         {renderTrackerItems()}
       </nav>
       {/* Garder ça ou pas ? */}
-      <svg xmlns="http://www.w3.org/2000/svg" version="1.1">
+      {/* <svg xmlns="http://www.w3.org/2000/svg" version="1.1">
         <defs>
           <filter id="shadowed-goo">
               <feGaussianBlur in="SourceGraphic" result="blur" stdDeviation="10" />
@@ -86,7 +86,7 @@ const BattleTracker = () => {
               <feComposite in2="goo" in="SourceGraphic" result="mix" />
           </filter>
         </defs>
-      </svg>
+      </svg> */}
     </>
   );
 };

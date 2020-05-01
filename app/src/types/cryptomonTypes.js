@@ -12,6 +12,7 @@ export type CryptomonType = {|
   defense: number,
   speed: number,
 |};
+export type CryptomonMoveType = Object;
 
 export const defaultCryptomon = {
   id: 0,

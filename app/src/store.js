@@ -22,18 +22,24 @@ import modalReducer, {
   initialState as initiaModalState,
   type ModalState,
 } from 'reducers/modalReducer';
+import battleReducer, {
+  initialState as initialBattleState,
+  type BattleState,
+} from 'reducers/battleReducer';
 
 import type { CryptomonActionType, CryptomonActionEnumType } from 'actions/cryptomonsActions';
 import type { ActiveAccountType } from 'actions/activeAccountActions';
 import type { UserActionType, UserActionEnumType } from 'actions/userActions';
 import type { ModalActionType, ModalEnumType } from 'actions/modalActions';
+import type { BattleActionType, BattleActionEnumType } from 'actions/battleActions';
 import type { ReducerType } from 'types/reducerTypes';
 
 export type ActionType =
   | UserActionType
   | CryptomonActionType
   | ActiveAccountType
-  | ModalActionType;
+  | ModalActionType
+  | BattleActionType;
 
 type CombinedReducerStateType =
   & CryptomonStateType
@@ -44,6 +50,7 @@ type ActionEnumsType =
 | CryptomonActionEnumType
 | UserActionEnumType
 | ModalEnumType
+| BattleActionEnumType
 | 'SET_ACTIVE_ACCOUNT';
 
 const reducers = (state, { type, payload }: ActionType) => {
@@ -53,6 +60,7 @@ const reducers = (state, { type, payload }: ActionType) => {
     ...cryptomonsReducer,
     ...activeAccountReducer,
     ...modalReducer,
+    ...battleReducer,
   };
 
   return combinedReducers[type](state, { type, payload });
@@ -63,6 +71,7 @@ const init = {
   ...initialActiveAccountState,
   ...initialUserState,
   ...initiaModalState,
+  ...initialBattleState,
 };
 
 export const Store = createContext<Object>(reducers);

@@ -10,9 +10,7 @@ import { DrizzleContext } from "@drizzle/react-plugin";
 import CryptomonCard from 'fragments/CryptomonCard';
 import Button from 'fragments/Button';
 
-import { getUserCryptomon, catchCryptomon } from 'actions/cryptomonsActions';
-import { setActiveAccount } from 'actions/activeAccountActions';
-import { getCryptomonMiddleware, catchCryptomonMiddleware } from 'middlewares/cryptomonMiddlewares';
+import { getCryptomons, catchCryptomon } from 'controllers/cryptomonControllers';
 import useCryptomonsMiddleware from 'hooks/useCryptomonsMiddleware';
 
 import wording from 'constants/wording';
@@ -22,19 +20,18 @@ import { Store } from 'store';
 import 'styles/CryptomonList.scss';
 
 const CryptomonList = (): React$Element<'div'> => {
-  const { drizzleState } = useContext(DrizzleContext.Context);
-  const [{ activeAccount, cryptomons }, dispatch] = useContext(Store);
+  const drizzleContext = useContext(DrizzleContext.Context);
+  const store = useContext(Store);
+
+  const { drizzleState } = drizzleContext;
+  const [{ activeAccount, cryptomons }, dispatch] = store;
 
   useEffect(() => {
-    cryptomons && !(cryptomons.length > 0) && dispatch(getUserCryptomon());
-  })
-
-  useCryptomonsMiddleware({ status: 'cryptomonsStatus', account: activeAccount, type: 'get' }, getCryptomonMiddleware);
-
-  useCryptomonsMiddleware({ status: 'catchCryptoStatus', account: activeAccount, type: 'post' }, catchCryptomonMiddleware);
+    getCryptomons(store, drizzleContext);
+  }, [])
 
   const handleCatchCryptomon = () => {
-    dispatch(catchCryptomon());
+    catchCryptomon(store, drizzleContext)
   };
 
   const renderCryptomons = (): React$Element<typeof CryptomonCard>[] => {

@@ -23,15 +23,18 @@ const cryptomonSvg = {
 
 type Props = {|
   cryptomon: CryptomonType,
+  onClick?: (cryptomon: CryptomonType) => void,
 |};
 
-const CryptomonCard = ({ cryptomon }: Props): React$Element<'div'> => {
+const CryptomonCard = ({ cryptomon, onClick }: Props): React$Element<'div'> => {
   const renderIVs = (): React$Element<typeof IndividualStat>[] => {
     const stats = Object.keys(pick(cryptomon, [
       'health',
       'attack',
       'defense',
-      'speed'
+      'speed',
+      'specialAttack',
+      'specialDefense'
     ]));
 
     return stats.map<React$Element<typeof IndividualStat>>((key) => (
@@ -43,6 +46,10 @@ const CryptomonCard = ({ cryptomon }: Props): React$Element<'div'> => {
     ));
   }
 
+  const handleClick = () => {
+    onClick && onClick(cryptomon);
+  };
+
   const {
     dna,
     name,
@@ -52,7 +59,7 @@ const CryptomonCard = ({ cryptomon }: Props): React$Element<'div'> => {
   const Cryptomon = cryptomonSvg[deburr(name).toLowerCase()];
 
   return (
-    <div className='card-container'>
+    <div className='card-container' onClick={handleClick}>
       <div className='card-image' style={style}>
         <Cryptomon
           primary={`#${dna.substr(2, 6)}`}
@@ -75,5 +82,9 @@ const CryptomonCard = ({ cryptomon }: Props): React$Element<'div'> => {
     </div>
   );
 }
+
+CryptomonCard.defaultProps = {
+  onClick: () => {},
+};
 
 export default CryptomonCard;

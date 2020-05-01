@@ -7,16 +7,20 @@ import socket, { SocketHandlers } from 'api/socket';
 
 import Button from 'fragments/Button';
 
-import { hideModal } from 'actions/modalActions';
+import { openModal, hideModal } from 'actions/modalActions';
+import { setArenaId, updatePlayerOne } from 'actions/battleActions';
+import { setPlayers } from 'actions/battleActions';
 
 import { Store } from 'store';
 
 import classnames from 'utils/classnames';
 
+import { type TamerType, nullTamer } from 'types/battleTypes';
+
 import 'styles/Modal.scss';
 
 const Modal = () => {
-  const [{ modalId, opened, data }, dispatch] = useContext(Store);
+  const [{ modalId, opened, data, arenaId, playerOne, playerTwo }, dispatch] = useContext(Store);
   const history = useHistory();
 
   const handleCloseModal = () => {
@@ -24,14 +28,40 @@ const Modal = () => {
   };
 
   const acceptChallenge = () => {
-    history.push('/arena/selection');
-    socket.emit('accept-challenge', data.challenger.id);
+    socket.emit('accept-challenge', data.challenger, data.me);
+    console.log('accept-challenge', data.challenger.id, data.me.id);
+
+
+    const playerOne: TamerType = { ...nullTamer, ...data.me };
+    const playerTwo: TamerType = { ...nullTamer, ...data.challenger };
+    console.log('les joueiurs dans la modale du défié ==> ', { playerOne, playerTwo });
+
+    dispatch(setPlayers(playerOne, playerTwo));
+    dispatch(setArenaId(1)); //TODO que fait-on avec les id d'arène ? Sont-ils gérés par le contrat ? La db ?
     dispatch(hideModal());
+
+    history.push('/arena/selection');
   };
 
   const refuseChallenge = () => {
     socket.emit('refuse-challenge', data.challenger.id, data.me);
     dispatch(hideModal());
+  };
+
+  const goToArena = () => {
+    socket.emit('cryptomon-chosen', playerTwo.id, data.cryptomon);
+    dispatch(updatePlayerOne({
+      ...playerOne,
+      cryptomon: data.cryptomon,
+      ready: true,
+    }));
+    dispatch(hideModal());
+  }
+
+  const handleClaimLevelUp = () => {
+    data.handleLevelUp();
+    dispatch(hideModal());
+    dispatch(openModal(7, { cryptomon: data.cryptomon }));
   };
 
   const renderModal = () => {
@@ -55,8 +85,37 @@ const Modal = () => {
       case 3:
         return (
           <div className='modal-text'>
-            <p>Désolé ! {data.refusedBy || ''} a refusé ton défi !</p>
+            <p>Désolé ! {data.refusedBy.nickname || ''} a refusé ton défi !</p>
             <Button handleClick={handleCloseModal}>Bon...D'accord !</Button>
+          </div>
+        );
+      case 4:
+        return (
+          <div className='modal-text'>
+            <p>Tu as choisi {data.cryptomon.name} ! </p>
+            <Button handleClick={goToArena}>C'est parti !</Button>
+            <Button handleClick={handleCloseModal}>Hmm...Laissez-moi une minute !</Button>
+          </div>
+        );
+      case 5:
+        return (
+          <div className='modal-text'>
+            <p>{data.cryptomon.name} a gagné un niveau ! </p>
+            <Button handleClick={handleClaimLevelUp}>Monter d'un niveau !</Button>
+          </div>
+        );
+      case 6:
+        return (
+          <div className='modal-text'>
+            <p>{data.cryptomon.name} a gagné un niveau ! </p>
+            <Button handleClick={handleClaimLevelUp}>Monter d'un niveau !</Button>
+          </div>
+        );
+      case 7:
+        return (
+          <div className='modal-text'>
+            <p>Les statistiques de {data.cryptomon.name} ont augmenté.</p>
+            <Button handleClick={handleCloseModal}>Super !</Button>
           </div>
         );
       default:
