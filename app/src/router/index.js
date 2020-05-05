@@ -9,6 +9,9 @@ import {
 import CryptomonList from 'components/CryptomonList';
 import LandingPage from 'components/LandingPage';
 import UserEdition from 'components/UserEdition';
+import SelectForBattle from 'components/SelectForBattle';
+import Battleground from 'components/Battleground';
+import BattleResults from 'components/BattleResults';
 
 const MainRouter = () => (
   <Switch>
@@ -26,6 +29,21 @@ const MainRouter = () => (
       exact
       path='/me'
       component={UserEdition}
+    />
+    <Route
+      exact
+      path='/arena/selection'
+      component={SelectForBattle}
+    />
+    <Route
+      exact
+      path='/arena/battle'
+      component={Battleground}
+    />
+    <Route
+      exact
+      path='/arena/results'
+      component={BattleResults}
     />
   </Switch>
 );

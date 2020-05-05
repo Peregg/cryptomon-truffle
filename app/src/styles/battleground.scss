@@ -1,0 +1,69 @@
+.battleground {
+  margin: 0 50vh;
+  padding: 30px;
+  background-color: aquamarine;
+}
+.battleground-ennemy {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.battleground-me {
+  margin-top: 40px;
+}
+
+.battleground-me, .battleground-ennemy {
+  display: flex;
+
+  & .battleground-cmon {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+
+    & .battleground-lifebar {
+      z-index: 1;
+      bottom: 15px;
+      width: 100%;
+      height: 35px;
+
+      & .battleground-text {
+        display: flex;
+        justify-content: center;
+        margin: 10px 0;
+      }
+    }
+  }
+}
+
+.battleground-menu {
+  flex: 1;
+  display: flex;
+  justify-content: space-around;
+  background-color: #0000005e;
+  margin: 0 15px;
+  flex-wrap: wrap;
+  border-radius: 5px;
+
+  & .battleground-move {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+    border-radius: 5px;
+    width: 80%;
+    height: 80%;
+    margin: auto;
+  }
+
+  & > .battleground-menu-item {
+    flex: 0 44%;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 10px;
+    background-color: white;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+}
