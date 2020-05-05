@@ -17,15 +17,18 @@ import { computeCryptomonStats } from 'utils/cryptomonsUtils';
 
 import socket from 'api/socket';
 
-const BattleResults = () => {
-  const [{ activeAccount, playerOne, playerTwo, user: { nickname, avatar } }, dispatch] = useContext(Store);
+const BattleResults = ({ state: [ battleState ]}: Object) => {
+  const [{ activeAccount, user: { nickname, avatar } }, dispatch] = useContext(Store);
+
+  const drizzleContext = useContext(DrizzleContext.Context);
   const {
     drizzle: {
       contracts: {
         CryptomonContract,
       },
     },
-   } = useContext(DrizzleContext.Context);
+   } = drizzleContext;
+   const { playerOne, playerTwo, winner } = battleState;
 
   const history = useHistory();
 
@@ -35,20 +38,19 @@ const BattleResults = () => {
     }
   }, [playerOne, playerTwo]);
 
-  const winner = (playerOne?.isWinner && playerOne) || playerTwo;
-  const looser = (playerOne?.isWinner && playerTwo) || playerOne;
-  const title = `${winner.cryptomon.name} de ${winner.nickname} a gagné le combat contre ${looser.cryptomon.name} de ${looser.nickname} !`;
+  const winnerPlayer = battleState[winner];
+  const looser = (winnerPlayer.id === playerOne.id && playerTwo) || playerOne;
+  const title = `${winnerPlayer.cmon.name} de ${winnerPlayer.nickname} a gagné le combat contre ${looser.cmon.name} de ${looser.nickname} !`;
   const {
     baseXp,
     baseHealth,
     baseAttack,
     baseDefense,
     baseSpeed
-  } = CryptomonsDB.find(({ name }) => name === looser.cryptomon.name);
-  const { dna, level } = winner.cryptomon;
-  console.log({ baseXp, looser });
+  } = CryptomonsDB.find(({ name }) => name === looser.cmon.name);
+  const { dna, level } = winnerPlayer.cmon;
 
-  const xp = Math.floor((baseXp*(looser.cryptomon.level/7)));
+  const xp = Math.floor((baseXp*(looser.cmon.level/7)));
 
   const handleGoHome = () => {
     history.push('/');
@@ -56,22 +58,27 @@ const BattleResults = () => {
     dispatch(emptyBattleState());
   };
 
-  const handleLevelUp = async () => {
-    const cryptomonIndex = CryptomonsDB.findIndex(({ name }) => name === winner.cryptomon.name);
-    const stats = computeCryptomonStats(cryptomonIndex, dna, level);
+  const handleLevelUp = async (newLevel: number) => {
+    const cryptomonIndex = CryptomonsDB.findIndex(({ name }) => name === winnerPlayer.cmon.name);
+    const stats = computeCryptomonStats(cryptomonIndex, dna, newLevel);
 
-    const gas = await CryptomonContract.methods.levelUp(winner.cryptomon.id, xp, stats).estimateGas();
+    const gas = await CryptomonContract.methods.levelUp(winnerPlayer.cmon.id, newLevel, xp, stats).estimateGas();
 
-    await CryptomonContract.methods.levelUp(winner.cryptomon.id, xp, stats).send({ from: activeAccount, gas });
+    const test = await CryptomonContract.methods.levelUp(winnerPlayer.cmon.id, newLevel, xp, stats).send({ from: activeAccount, gas });
+    handleGoHome();
   };
 
   const handleClaimXp = async () => {
-    if (xp >= Math.pow(winner.cryptomon.level, 3)) {
-      handleLevelUp();
-    } else {
-      const gas = await CryptomonContract.methods.claimXP(winner.cryptomon.id, xp).estimateGas();
+    const totalXP = winnerPlayer.cmon.xp + xp;
+    const possibleNewLevel = Math.trunc(Math.cbrt(totalXP));
 
-      await CryptomonContract.methods.claimXP(winner.cryptomon.id, xp).send({ from: activeAccount, gas });
+    if (possibleNewLevel > level) {
+      handleLevelUp(possibleNewLevel);
+    } else {
+      const gas = await CryptomonContract.methods.claimXP(winnerPlayer.cmon.id, xp).estimateGas();
+
+      await CryptomonContract.methods.claimXP(winnerPlayer.cmon.id, xp).send({ from: activeAccount, gas });
+      handleGoHome();
     }
   };
 
@@ -80,7 +87,7 @@ const BattleResults = () => {
       <div className='winner-container'>
         <h2>{title}</h2>
         <p>Pour valider la victoire de ton cryptomon et lui faire gagner de l'expérience tu dois payer le prix d'une transaction Ethereum.</p>
-        {activeAccount === winner.address && <Button handleClick={handleClaimXp}>
+        {activeAccount === winnerPlayer.address && <Button handleClick={handleClaimXp}>
           <p>Recevoir {xp} points d'expérience</p>
         </Button>}
         <Button handleClick={handleGoHome}>

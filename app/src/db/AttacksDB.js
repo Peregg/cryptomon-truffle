@@ -55,34 +55,58 @@ export const TYPE_CHART = {
 };
 
 
-export const carapuce = [
-  {
-    level: 1,
+export const moves = {
+  101: {
+    id: 101,
     name: 'Mimi-queue',
     category: 'effect',
     type: 'malus',
-    effect: {
-      applyOn: 'attack',
-      target: 'ennemy',
-      modifier: 1,
-      duration: null,
+    effect: (user, foe) => {
+      return {
+        user,
+        foe: {
+          ...foe,
+          modifiers: {
+            ...foe.modifiers,
+            attack: foe.modifiers.attack -= 1,
+          },
+        },
+      };
     },
+    message: (user, foe) => `${user.cmon.name} de ${user.nickname} utilise Mimi-queue sur ${foe.cmon.name} ! Son attaque diminue !`,
     power: null,
   },
-  {
-    level: 1,
+  102: {
+    id: 102,
     name: 'Pistolet à O',
     category: 'attack',
     type: 'water',
     effect: null,
     power: 10,
-    class: 'specialc',
+    class: 'special',
   },
-];
-
-export const salameche = [
-  {
-    level: 1,
+  103: {
+    id: 103,
+    name: 'Tour rapide',
+    category: 'attack',
+    type: 'normal',
+    effect: (user, foe) => {
+      return {
+        user: {
+          ...user,
+          modifiers: {
+            ...user.modifiers,
+            speed: user.modifiers.speed += 1,
+          },
+        },
+        foe,
+      };
+    },
+    power: 20,
+    class: 'special',
+  },
+  201: {
+    id: 201,
     name: 'Griffe',
     category: 'attack',
     type: 'normal',
@@ -90,24 +114,37 @@ export const salameche = [
     power: 40,
     class: 'physical'
   },
-  {
-    level: 1,
+  202: {
+    id: 202,
     name: 'Rugissement',
     category: 'effect',
     type: 'malus',
-    effect: {
-      applyOn: 'attack',
-      target: 'ennemy',
-      modifier: 1,
-      duration: null,
+    effect: (user, foe) => {
+      return {
+        user,
+        foe: {
+          ...foe,
+          modifiers: {
+            ...foe.modifiers,
+            attack: foe.modifiers.attack -= 1,
+          },
+        },
+      };
     },
+    message: (user, foe) => `${user.cmon.name} de ${user.nickname} utilise Rugissment sur ${foe.cmon.name} ! Son attaque diminue !`,
     power: null,
   },
-];
-
-export const bulbizarre = [
-  {
-    level: 1,
+  203: {
+    id: 203,
+    name: 'Flammèche',
+    category: 'attack',
+    type: 'fire',
+    effect: null,
+    message: null,
+    power: 40,
+  },
+  301: {
+    id: 301,
     name: 'Charge',
     category: 'attack',
     type: 'normal',
@@ -115,25 +152,49 @@ export const bulbizarre = [
     power: 15,
     class: 'physical',
   },
-  {
-    level: 1,
+  302: {
+    id: 302,
     name: 'Croissance',
     category: 'effect',
     type: 'bonus',
-    effect: {
-      applyOn: 'attack',
-      target: 'self',
-      modifier: 1,
-      duration: null,
+    effect: (user, foe) => {
+      return {
+        user: {
+          ...user,
+          modifiers: {
+            ...user.modifiers,
+            attack: user.modifiers.attack += 1,
+          },
+        },
+        foe,
+      };
     },
+    message: (user, foe) => `${user.cmon.name} de ${user.nickname} utilise Croissance ! Son attaque augmente !`,
+  },
+  303: {
+    id: 303,
+    name: 'Vampi-graine',
+    category: 'effect',
+    type: 'bonus',
+    effect: (user, foe) => {
+      return {
+        user: {
+          ...user,
+          health: user.health += foe.health * 1/8,
+        },
+        foe: {
+          ...foe,
+          health: foe.health -= foe.health * 1/8,
+          status: {
+            ...foe.status,
+            isLeeched: true,
+          },
+        },
+      };
+    },
+    message: (user, foe) => `${foe.cmon.name} de ${foe.nickname} est vampirisé par ${user.cmon.name} de ${user.nickname} !`,
     power: null,
   },
-];
-
-const attacks = {
-  carapuce,
-  salameche,
-  bulbizarre,
 };
 
-export default attacks;
+export default moves;

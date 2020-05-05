@@ -17,6 +17,15 @@ $grey-100: #F8F9FA;
     font-size: 14px;
     text-align: center;
     margin: 2px 0;
+    display: flex;
+
+    & .card-name {
+      flex: 1;
+    }
+
+    & .card-level {
+      margin: 0 10px;
+    }
   }
 
   & .card-image {

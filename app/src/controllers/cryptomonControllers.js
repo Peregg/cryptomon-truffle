@@ -37,6 +37,7 @@ export const getCryptomons = async (store: Object[], drizzleContext: Object) => 
         specialDefense,
         speed,
       ],
+      xp,
     }) => ({
       id,
       name,
@@ -50,8 +51,8 @@ export const getCryptomons = async (store: Object[], drizzleContext: Object) => 
       specialAttack,
       specialDefense,
       speed,
+      xp,
     }));
-    console.log(myCryptomons);
 
     dispatch(getUserCryptomon(myCryptomons));
   } catch (error) {

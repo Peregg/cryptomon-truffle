@@ -1,7 +1,7 @@
 // @flow
 
 import React, { useEffect, useState, useContext, useRef } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useHistory, Redirect } from 'react-router-dom';
 
 import { pick, deburr } from 'lodash';
 
@@ -11,14 +11,21 @@ import Salameche from 'fragments/crytpomons/Salameche';
 import Carapuce from 'fragments/crytpomons/Carapuce';
 import Bulbizarre from 'fragments/crytpomons/Bulbizarre';
 import HealthBar from 'fragments/HealthBar';
+import BattleResults from 'components/BattleResults';
 
 import attackDB from 'db/AttacksDB';
+import cryptomonDB from 'db/CryptomonsDB';
 
 import { updatePlayerOne, updatePlayerTwo } from 'actions/battleActions';
 
 import socket, { SocketHandlers } from 'api/socket';
 
-import { computeCmonMoveEffect } from 'utils/battleUtils';
+import {
+  computeCmonMoveEffect,
+  finishTurn,
+  getfasterPlayer,
+  processStatusEffect
+} from 'utils/battleUtils';
 
 import 'styles/battleground.scss';
 
@@ -28,123 +35,72 @@ const cryptomonSvg = {
   carapuce: Carapuce,
 };
 
-const modifiers = {
-  attack: 6,
-  defense: 6,
-  specialAttack: 6,
-  specialDefense: 6,
-  speed: 6,
-};
-
 const Battleground = () => {
-  const [{ playerOne, playerTwo }, dispatch] = useContext(Store);
-  const [battleState, setBattleState] = useState({
-    myCmon: {
-      ...playerOne.cryptomon,
-      modifiers,
-    },
-    ennemyCmon: {
-      ...playerTwo.cryptomon,
-      modifiers,
-    },
-    playerOneMove: {
-      move: null,
-      waiting: false,
-    },
-    playerTwoMove: {
-      move: null,
-      waiting: false,
-    },
-    moveMessage: null,
-  });
-
-  const [myCmon, updateCmon] = useState({
-    ...playerOne.cryptomon,
-    modifiers,
-  });
-  const [ennemyCmon, updateEnnemy] = useState({
-    ...playerTwo.cryptomon,
-    modifiers,
-  });
-  const [playerOneMove, savePlayerOneMove] = useState({
-    move: null,
-    waiting: false,
-  });
-  const [playerTwoMove, savePlayerTwoMove] = useState({
-    move: null,
-    waiting: false,
-  });
-  const [moveMessage, displayMoveMessage] = useState(null);
+  const store = useContext(Store);
   const history = useHistory();
 
-  const MyCryptomon = cryptomonSvg[deburr(myCmon.name).toLowerCase()];
-  const EnnemyCryptomon = cryptomonSvg[deburr(ennemyCmon.name).toLowerCase()];
-  const myAttackOptions = attackDB[deburr(myCmon.name).toLowerCase()];
+  const [{ playerOne: initialPlayerOne, playerTwo: initialPlayerTwo, arenaId }, dispatch] = store;
+
+  const state = useState({
+    playerOne: { ...initialPlayerOne },
+    playerTwo: { ...initialPlayerTwo },
+    moveMessage: null,
+    winner: null,
+  });
+
+  const [{
+      playerOne,
+      playerTwo,
+      playerOne: {
+        cmon: myCmon,
+      },
+      playerTwo: {
+        cmon: foeCmon,
+      },
+      moveMessage,
+      winner,
+    },
+    setState
+  ] = state;
 
   useEffect(() => {
-    socket.on('attack-chosen', (move) => {
-      console.log('cc attack ---->', move);
-      savePlayerTwoMove({
-        move,
-        waiting: true,
-      });
+    socket.on('attack-chosen', (selectedMove) => {
+      setState(prevState => ({
+        ...prevState,
+        playerTwo: {
+          ...prevState.playerTwo,
+          cmon: {
+            ...prevState.playerTwo.cmon,
+            selectedMove,
+          },
+          isWaitingFoe: true,
+        }
+      }));
     });
+
+    return () => socket.off('attack-chosen');
   }, []);
 
   const timer = useRef(null);
+  const stateRef = useRef(state);
+  stateRef.current = state;
 
   useEffect(() => {
-    if (playerOneMove.waiting && playerTwoMove.waiting) {
-      const fasterCmon = (myCmon.speed > ennemyCmon.speed && myCmon) || ennemyCmon;
-      const slowerCmon = (fasterCmon.id === myCmon.id && ennemyCmon) || myCmon;
-      const updateFasterCmon = (fasterCmon.id === myCmon.id && updateCmon) || updateEnnemy;
-      const updateSlowerCmon = (slowerCmon.id === myCmon.id && updateCmon) || updateEnnemy;
-      const fasterMove = (fasterCmon.id === myCmon.id && playerOneMove.move) || playerTwoMove.move;
-      const slowerMove = (slowerCmon.id === myCmon.id && playerOneMove.move) || playerTwoMove.move;
-      const fasterCmonOwner = (fasterCmon.id === myCmon.id && playerOne) || playerTwo;
-      const updateFasterCmonOwner = (fasterCmon.id === myCmon.id && updatePlayerOne) || updatePlayerTwo;
-      const slowerCmonOwner = (fasterCmon.id === myCmon.id && playerTwo) || playerOne;
-      const updateSlowerCmonOwner = (fasterCmon.id === myCmon.id && updatePlayerTwo) || updatePlayerOne;
+    if (!winner && playerOne.isWaitingFoe && playerTwo.isWaitingFoe) {
+      const { fasterPlayer, slowerPlayer } = getfasterPlayer(playerOne, playerTwo);
 
-      computeCmonMoveEffect(fasterMove, {
-          attackingCmon: fasterCmon,
-          defendingCmon: slowerCmon,
-          updateAttackingCmon: updateFasterCmon,
-          updateDefendingCmon: updateSlowerCmon,
-          attackingCmonOwner: fasterCmonOwner,
-          updateAttackingCmonOwner: updateFasterCmonOwner,
-        },
-        displayMoveMessage,
-        history,
-        dispatch,
-      );
+      processStatusEffect(fasterPlayer, stateRef.current);
 
       timer.current = setTimeout(() => {
-        computeCmonMoveEffect(slowerMove, {
-            attackingCmon: slowerCmon,
-            defendingCmon: fasterCmon,
-            updateAttackingCmon: updateSlowerCmon,
-            updateDefendingCmon: updateFasterCmon,
-            attackingCmonOwner: slowerCmonOwner,
-            updateAttackingCmonOwner: updateSlowerCmonOwner,
-          },
-          displayMoveMessage,
-          history,
-          dispatch,
-        );
+        computeCmonMoveEffect(fasterPlayer, stateRef.current, 'premier passage');
+      }, 1000);
+
+      timer.current = setTimeout(() => {
+        computeCmonMoveEffect(slowerPlayer, stateRef.current, 'second passage');
       }, 2000);
 
       timer.current = setTimeout(() => {
-        displayMoveMessage(null);
-
-        savePlayerOneMove({
-          move: null,
-          waiting: false,
-        });
-        savePlayerTwoMove({
-          move: null,
-          waiting: false,
-        });
+        finishTurn(stateRef.current);
       }, 4000);
 
       return () => {
@@ -152,17 +108,39 @@ const Battleground = () => {
       }
     }
 
-  }, [playerOneMove, playerTwoMove]);
+  }, [playerOne.isWaitingFoe, playerTwo.isWaitingFoe]);
 
-  const handleUseAttack = (attack) => () => {
-    savePlayerOneMove({
-      move: attack,
-      waiting: true,
-    });
-    socket.emit('attack-chosen', playerTwo.id, attack);
+  const handleSelectMove = (selectedMove) => () => {
+    setState(prevState => ({
+      ...prevState,
+      playerOne: {
+        ...prevState.playerOne,
+        cmon: {
+          ...prevState.playerOne.cmon,
+          selectedMove,
+        },
+        isWaitingFoe: true,
+      }
+    }));
+
+    socket.emit('attack-chosen', arenaId, selectedMove);
   };
 
+  if (Object.keys(playerOne).length < 1 || Object.keys(playerTwo).length < 1) {
+    return <Redirect to='/' />;
+  }
+
+  const MyCryptomon = cryptomonSvg[deburr(playerOne.cmon.name).toLowerCase()];
+  const EnnemyCryptomon = cryptomonSvg[deburr(playerTwo.cmon.name).toLowerCase()];
+  const myAttackOptions = cryptomonDB
+    .find(({ name }) => name === playerOne.cmon.name).moves
+    .filter(([level, move]) => level <= playerOne.cmon.level)
+    .map((([_, move]) => attackDB[move]));
+
   const renderMenuItems = () => {
+    if (winner) {
+      return <BattleResults state={state} />
+    }
     if (moveMessage) {
       return (
         <div className='battleground-move'>
@@ -170,11 +148,15 @@ const Battleground = () => {
         </div>
       );
     }
-    if (playerOneMove.waiting) {
-      return <>En attente du joueur 2 !</>
+    if (playerOne.isWaitingFoe) {
+      return (
+        <div className='battleground-move'>
+         <p>En attente du joueur 2...</p>
+        </div>
+      );
     }
     return myAttackOptions.map(attack => (
-      <div className='battleground-menu-item' onClick={handleUseAttack(attack)}>
+      <div key={attack.name} className='battleground-menu-item' onClick={handleSelectMove(attack.id)}>
         {attack.name}
       </div>
     ));
@@ -185,13 +167,13 @@ const Battleground = () => {
       <div className='battleground-ennemy'>
         <div className='battleground-cmon'>
           <EnnemyCryptomon
-            primary={`#${ennemyCmon.dna.substr(2, 6)}`}
+            primary={`#${foeCmon.dna.substr(2, 6)}`}
           />
           <div className='battleground-lifebar'>
             <span className='battleground-text'>
-              {ennemyCmon.name} de {playerTwo.nickname}
+              {foeCmon.name} de {playerTwo.nickname}
             </span>
-            <HealthBar health={ennemyCmon.health} maxHealth={playerTwo.cryptomon.health} />
+            <HealthBar health={foeCmon.health} maxHealth={foeCmon.maxHealth} />
           </div>
         </div>
 
@@ -205,7 +187,7 @@ const Battleground = () => {
             <span className='battleground-text'>
               {myCmon.name} de {playerOne.nickname}
             </span>
-            <HealthBar health={myCmon.health} maxHealth={playerOne.cryptomon.health} />
+            <HealthBar health={myCmon.health} maxHealth={myCmon.maxHealth} />
           </div>
         </div>
         <div className='battleground-menu'>

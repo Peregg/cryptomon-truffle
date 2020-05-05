@@ -24,7 +24,6 @@
           "images": "./src/images",
           "fragments": "./src/fragments",
           "utils": "./src/utils",
-          "middlewares": "./src/middlewares",
           "controllers": "./src/controllers",
           "router": "./src/router",
           "api": "./src/api",

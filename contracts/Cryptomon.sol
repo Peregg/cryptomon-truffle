@@ -82,12 +82,12 @@ contract CryptomonContract {
         allCryptomons[findCryptomonIndex(cryptomonId, msg.sender)].xp += xp;
     }
 
-    function levelUp(uint cryptomonId, uint xp, uint[] memory stats) public {
-        cryptos[msg.sender][findCryptomonIndex(cryptomonId, msg.sender)].level += 1;
+    function levelUp(uint cryptomonId, uint newLevel, uint xp, uint[] memory stats) public {
+        cryptos[msg.sender][findCryptomonIndex(cryptomonId, msg.sender)].level = newLevel;
         cryptos[msg.sender][findCryptomonIndex(cryptomonId, msg.sender)].xp += xp;
         cryptos[msg.sender][findCryptomonIndex(cryptomonId, msg.sender)].stats = stats;
 
-        allCryptomons[findCryptomonIndex(cryptomonId, msg.sender)].level += 1;
+        allCryptomons[findCryptomonIndex(cryptomonId, msg.sender)].level = newLevel;
         allCryptomons[findCryptomonIndex(cryptomonId, msg.sender)].xp += xp;
         allCryptomons[findCryptomonIndex(cryptomonId, msg.sender)].stats = stats;
     }

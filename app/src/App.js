@@ -10,8 +10,9 @@ import { DrizzleContext } from "@drizzle/react-plugin";
 import Web3 from 'web3';
 
 import { setActiveAccount } from 'actions/activeAccountActions';
-import { getUserCryptomon } from 'actions/cryptomonsActions';
-import { getUserProfile } from 'middlewares/userApiMiddleware';
+
+import { getUser } from 'controllers/userController';
+import { getCryptomons } from 'controllers/cryptomonControllers';
 
 import { StoreProvider, Store } from 'store';
 import MainRouter from 'router';
@@ -26,20 +27,18 @@ import socket, { SocketHandlers } from 'api/socket';
 import "styles/App.scss";
 
 const App = () => {
-  const { drizzleState } = useContext(DrizzleContext.Context);
-  const [{ activeAccount }, dispatch] = useContext(Store);
+  const drizzle = useContext(DrizzleContext.Context);
+  const store = useContext(Store);
+  const [{ activeAccount, user }, dispatch] = store;
 
   // Save actual web3 provider address in store context & subscribe address changes
   const handleMetamaskChange = (accounts) => {
-    console.count('api call to usre')
     dispatch(setActiveAccount(accounts[0]));
-    dispatch(getUserCryptomon());
     socket.emit('force-disconnect');
   };
 
   useEffect(() => {
     const { ethereum } = window;
-    console.log('eth addr', ethereum.selectedAddress);
     activeAccount === '' && dispatch(setActiveAccount(ethereum.selectedAddress));
     ethereum.on('accountsChanged', handleMetamaskChange);
   }, []);
@@ -47,7 +46,8 @@ const App = () => {
   // Fetch tamer data again if account change
   useEffect(() => {
     if (activeAccount !== '') {
-      getUserProfile({ activeAccount }, dispatch);
+      getUser(store);
+      getCryptomons(store, drizzle);
     }
   }, [activeAccount]);
 
@@ -55,7 +55,7 @@ const App = () => {
     <Router>
       <Header />
       <MainRouter />
-      <BattleTracker />
+      {user && <BattleTracker />}
       <ModalProvider />
     </Router>
   );

@@ -16,18 +16,19 @@ import { Store } from 'store';
 import { getCryptomons } from 'controllers/cryptomonControllers';
 
 import type { CryptomonType } from 'types/cryptomonTypes';
+import { initialFightingCryptomon } from 'types/battleTypes';
 
 const SelectForBattle = () => {
   const store = useContext(Store);
-  const drizzleContext = useContext(DrizzleContext);
+  const drizzleContext = useContext(DrizzleContext.Context);
   const [ready, setReady] = useState(false);
   const history = useHistory();
 
   const [{ cryptomons, playerOne, playerTwo }, dispatch] = store;
 
   useEffect(() => {
-    !cryptomons && getCryptomons(store, drizzleContext);
-  }, [])
+    !cryptomons && drizzleContext && getCryptomons(store, drizzleContext);
+  }, [cryptomons, drizzleContext])
 
   useEffect(() => {
     if (!playerOne || !playerTwo) {
@@ -43,14 +44,14 @@ const SelectForBattle = () => {
 
   useEffect(() => {
     socket.on('cryptomon-chosen', (arenaId, cryptomon) => {
-      console.log('cmon ----->', cryptomon);
-
       dispatch(updatePlayerTwo({
         ...playerTwo,
-        cryptomon,
+        cmon: initialFightingCryptomon(cryptomon),
         ready: true,
       }));
     });
+
+    return () => socket.off('cryptomon-chosen');
   }, []);
 
   useEffect(() => {
@@ -72,13 +73,18 @@ const SelectForBattle = () => {
   }
 
   const renderOptions = () => {
-    if (cryptomons && cryptomons.length > 0 && !playerOne.ready) {
-    return (
-        <div className='list-container'>
-          {renderCryptomons()}
-        </div>
-      );
+    if (!cryptomons) {
+      return 'Chargement...';
     }
+
+    if (cryptomons && cryptomons.length > 0 && !playerOne.ready) {
+      return (
+          <div className='list-container'>
+            {renderCryptomons()}
+          </div>
+        );
+    }
+
     return 'En attente du joueur 2...';
   };
 

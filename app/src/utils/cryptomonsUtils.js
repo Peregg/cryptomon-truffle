@@ -4,7 +4,7 @@ import Web3 from "web3";
 import cryptomonDB from 'db/CryptomonsDB';
 
 export const generateRandomCryptomon = async (): Promise<{ name: string, _type: string, dna: string, stats: number[]}> => {
-  const randomIndex = Math.floor(Math.random() * 3) + 1 || 0;
+  const randomIndex = Math.floor(Math.random() * 3);
 
   const {
     name,

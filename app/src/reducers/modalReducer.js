@@ -25,9 +25,9 @@ const modalReducer = {
     modalId: payload.modalId || 0,
     data: payload.data || null,
   }),
-  [HIDE_MODAL]: (state: ModalState) => {console.log('kokocikoi', state);return({
+  [HIDE_MODAL]: (state: ModalState) => ({
     ...state,
     opened: false,
-  })},
+  }),
 };
  export default modalReducer;
