@@ -38,7 +38,8 @@
 .battleground-menu {
   flex: 1;
   display: flex;
-  justify-content: space-around;
+  align-items: center;
+  justify-content: space-between;
   background-color: #0000005e;
   margin: 0 15px;
   flex-wrap: wrap;

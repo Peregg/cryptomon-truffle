@@ -15,7 +15,11 @@ import { Store } from 'store';
 
 import classnames from 'utils/classnames';
 
-import { type TamerType, nullTamer } from 'types/battleTypes';
+import {
+  type PlayerType,
+  nullPlayer,
+  initialFightingCryptomon
+} from 'types/battleTypes';
 
 import 'styles/Modal.scss';
 
@@ -29,12 +33,9 @@ const Modal = () => {
 
   const acceptChallenge = () => {
     socket.emit('accept-challenge', data.challenger, data.me);
-    console.log('accept-challenge', data.challenger.id, data.me.id);
 
-
-    const playerOne: TamerType = { ...nullTamer, ...data.me };
-    const playerTwo: TamerType = { ...nullTamer, ...data.challenger };
-    console.log('les joueiurs dans la modale du défié ==> ', { playerOne, playerTwo });
+    const playerOne: PlayerType = { ...nullPlayer, ...data.me };
+    const playerTwo: PlayerType = { ...nullPlayer, ...data.challenger, isChallenger: true };
 
     dispatch(setPlayers(playerOne, playerTwo));
     dispatch(setArenaId(1)); //TODO que fait-on avec les id d'arène ? Sont-ils gérés par le contrat ? La db ?
@@ -52,7 +53,7 @@ const Modal = () => {
     socket.emit('cryptomon-chosen', playerTwo.id, data.cryptomon);
     dispatch(updatePlayerOne({
       ...playerOne,
-      cryptomon: data.cryptomon,
+      cmon: initialFightingCryptomon(data.cryptomon),
       ready: true,
     }));
     dispatch(hideModal());

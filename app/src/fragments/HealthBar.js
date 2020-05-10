@@ -11,15 +11,21 @@ type Props = {
 };
 
 function HealthBar({ maxHealth, health }: Props): React$Element<'div'> {
+  const [actualHealth, setActualHealth] = useState(parseInt(health, 10));
+
+  useEffect(() => {
+    setActualHealth(health);
+  }, [health])
 
   const width = `${parseInt(health, 10) / parseInt(maxHealth, 10) * 100}%`;
+
   const fill = useSpring({ width });
-  const hp = useSpring({ number: health, from: { number: maxHealth } })
+  const hp = useSpring({ number: actualHealth, from: { number: health } })
 
   return (
-    <div class='health-bar'>
-      <animated.div class='health-bar-fill' style={fill} />
-      <animated.div class='health-bar-content'>
+    <div className='health-bar'>
+      <animated.div className='health-bar-fill' style={fill} />
+      <animated.div className='health-bar-content'>
         <animated.span>{hp.number.interpolate(num => Math.round(num))}</animated.span> PV/{maxHealth} PV
       </animated.div>
     </div>

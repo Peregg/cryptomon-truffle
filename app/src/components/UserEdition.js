@@ -8,7 +8,7 @@ import Button from 'fragments/Button';
 import wording from 'constants/wording';
 
 import { Store } from 'store';
-import { getUserProfile, updateUserProfile } from 'middlewares/userApiMiddleware';
+import { getUser, updateUser } from 'controllers/userController';
 
 import 'styles/UserEdition.scss';
 
@@ -22,27 +22,24 @@ import {
 import upload from 'images/upload.webp';
 
 const UserEdition = () => {
-  const [{ activeAccount, getUserStatus, user, user: { avatar: userAvatar } }, dispatch] = useContext(Store);
+  const store = useContext(Store);
+  const [{ activeAccount, getUserStatus, user }, dispatch] = store;
+
   const [nickname, setNickName] = useState(user.nickname);
   const [avatar, setAvatar] = useState(user.avatar);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    console.count('render')
-    if (getUserStatus === STATUS_DEFAULT) {
-      getUserProfile({ activeAccount }, dispatch);
-    }
+    // if (activeAccount.length > 0 && !user) {
+    //   getUser(store);
+    // } @TODO : GARDER ÇA ?
 
-    if (getUserStatus === STATUS_LOADING) {
-      setLoading(true);
-    }
-
-    if (getUserStatus === STATUS_SUCCESS) {
+    if (user) {
       setNickName(user.nickname);
-      setAvatar(user.avatar)
+      setAvatar(user.avatar);
       setLoading(false);
     }
-  }, [activeAccount, getUserStatus, user.nickname])
+  }, [activeAccount, user])
 
 
   const handleChange = (value: string) => {
@@ -77,16 +74,18 @@ const UserEdition = () => {
   }
 
   const handleSubmit = () => {
-    updateUserProfile({ activeAccount, nickname, avatar }, dispatch);
+    updateUser({ nickname, avatar }, store);
   }
 
   if (!loading) {
+    console.log('render', nickname, avatar);
+
     return (
       <div className='container'>
         <div className='container'>
           <h2>{wording.your_profile}</h2>
           <div className='avatar-wrapper'>
-            <img className='profile-pic' src={avatar || userAvatar} alt={nickname} />
+            <img className='profile-pic' src={avatar} alt={nickname} />
             <span className='upload-overlay'>Changer</span>
             <div className='upload-button'>
             </div>
@@ -109,7 +108,7 @@ const UserEdition = () => {
       </div>
     );
   }
-  return <>Loading...</>
+  return <>Chargement...</>
 };
 
 export default UserEdition;

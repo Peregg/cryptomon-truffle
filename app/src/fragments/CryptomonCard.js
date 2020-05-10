@@ -53,6 +53,7 @@ const CryptomonCard = ({ cryptomon, onClick }: Props): React$Element<'div'> => {
   const {
     dna,
     name,
+    level,
   } = cryptomon;
 
   const style = { backgroundColor: `#${dna.substr(9, 8)}` };
@@ -72,7 +73,10 @@ const CryptomonCard = ({ cryptomon, onClick }: Props): React$Element<'div'> => {
           alt='pokeball'
         />
         <div className='card-body-stats'>
-          <p className='card-title'>{name}</p>
+          <div className='card-title'>
+            <span className='card-name'>{name}</span>
+            <span className='card-level'>niv.{level}</span>
+          </div>
           <Separator />
           <div className='card-stats'>
             {renderIVs()}

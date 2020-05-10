@@ -19,7 +19,6 @@ module.name_mapper='^middlewares\/\(.*\)$' -> '<PROJECT_ROOT>/src/middlewares/\1
 module.name_mapper='^images\/\(.*\)$' -> '<PROJECT_ROOT>/src/images/\1'
 module.name_mapper='^utils\/\(.*\)$' -> '<PROJECT_ROOT>/src/utils/\1'
 module.name_mapper='^fragments\/\(.*\)$' -> '<PROJECT_ROOT>/src/fragments/\1'
-module.name_mapper='^middlewares\/\(.*\)$' -> '<PROJECT_ROOT>/src/middlewares/\1'
 module.name_mapper='^controllers\/\(.*\)$' -> '<PROJECT_ROOT>/src/controllers/\1'
 module.name_mapper='^api\/\(.*\)$' -> '<PROJECT_ROOT>/src/api/\1'
 module.name_mapper='^store' -> '<PROJECT_ROOT>/src/store.js'

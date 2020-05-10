@@ -7,9 +7,12 @@ import { openModal, hideModal } from 'actions/modalActions';
 import { fetchSocketList } from 'actions/battleActions';
 import { setPlayers, setArenaId } from 'actions/battleActions';
 import type { SocketType } from 'types/socketTypes';
-import { nullTamer, type TamerType } from 'types/battleTypes';
+import { nullPlayer, type PlayerType } from 'types/battleTypes';
 
-const socket = io(`http://192.168.1.25:3001/battle`);
+const socket = io(`http://192.168.1.25:3001/battle`, {
+  rememberTransport: false,
+  transports: ['websocket', 'polling'],
+});
 
 export function SocketHandlers(dispatch: Function, history: Object, tamers: SocketType[]) {
   return {
@@ -19,10 +22,8 @@ export function SocketHandlers(dispatch: Function, history: Object, tamers: Sock
       dispatch(openModal(2, { challenger, me }));
     },
     challengeAccepted: (challenger: SocketType, sender: SocketType, arenaId: number) => {
-
-      const playerOne: TamerType = { ...nullTamer, ...challenger };
-      const playerTwo: TamerType = { ...nullTamer, ...sender };
-      console.log('les joueurs dans le socket du défieur =>', { playerOne, playerTwo });
+      const playerOne: PlayerType = { ...nullPlayer, ...challenger, isChallenger: true };
+      const playerTwo: PlayerType = { ...nullPlayer, ...sender };
 
       dispatch(setPlayers(playerOne, playerTwo));
       dispatch(setArenaId(arenaId));
@@ -32,6 +33,13 @@ export function SocketHandlers(dispatch: Function, history: Object, tamers: Sock
       dispatch(openModal(3, { refusedBy }));
     },
   };
+};
+
+export const unsubscribeSocket = () => {
+  socket.off('players');
+  socket.off('challenge');
+  socket.off('change-room');
+  socket.off('challenge-refused');
 };
 
 export default socket;

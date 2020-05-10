@@ -7,27 +7,29 @@ import {
   UPDATE_PLAYER_ONE,
   UPDATE_PLAYER_TWO,
   CLEAR_BATTLE_STATE,
+  FINISH_TURN,
+  DISPLAY_MOVE,
   type PayloadType,
 } from 'actions/battleActions';
 
 import type { CryptomonType } from 'types/CryptomonTypes';
 import type { UserType } from 'types/userTypes';
-import type { TamerType } from 'types/battleTypes';
+import type { PlayerType } from 'types/battleTypes';
 import type { SocketType } from 'types/socketTypes';
 
 export type BattleState = {
-  chosenCryptomon: ?CryptomonType,
-  playerOne: ?TamerType,
-  playerTwo: ?TamerType,
+  playerOne: ?PlayerType,
+  playerTwo: ?PlayerType,
   sockets: ?SocketType[],
   arenaId: ?number,
+  moveMessage: ?string,
 };
 
 export const initialState = {
-  chosenCryptomon: null,
   sockets: null,
   playerOne: null,
   playerTwo: null,
+  moveMessage: null,
 };
 
 const battleReducer = {
@@ -68,10 +70,37 @@ const battleReducer = {
       arenaId: payload.arenaId || null,
     };
   },
+  [FINISH_TURN]: (state: BattleState, { payload }: { payload: PayloadType}) => {
+    return {
+      ...state,
+      playerOne: {
+        ...state.playerOne,
+        cmon: {
+          ...state.playerOne.cmon,
+          selectedMove: null,
+        },
+        isWaitingFoe: false,
+      },
+      playerTwo: {
+        ...state.playerTwo,
+        cmon: {
+          ...state.playerTwo.cmon,
+          selectedMove: null,
+        },
+        isWaitingFoe: false,
+      },
+      moveMessage: null,
+    };
+  },
+  [DISPLAY_MOVE]: (state: BattleState, { payload }: { payload: PayloadType }) => {
+    return {
+      ...state,
+      moveMessage: payload.message,
+    };
+  },
   [CLEAR_BATTLE_STATE]: (state: BattleState, { payload }: { payload: PayloadType }) => {
     return {
       ...state,
-      chosenCryptomon: null,
       playerOne: null,
       playerTwo: null,
     };

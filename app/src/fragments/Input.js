@@ -45,8 +45,8 @@ const Input = ({
 
   (onError && inputClassNames.add('input-error'));
   (focused && inputContainerClassNames.add('active'));
-  value && inputContainerClassNames.add('filled');
-  value && inputLabelClassNames.add('fixed');
+  (initialValue || value) && inputContainerClassNames.add('filled');
+  (initialValue || value) && inputLabelClassNames.add('fixed');
 
   const onFocus = () => {
     setFocused(true);
@@ -60,7 +60,7 @@ const Input = ({
     <div className={inputContainerClassNames.build()}>
       <label className={inputLabelClassNames.build()} htmlFor={id}>{label}</label>
       <input
-        value={value}
+        value={initialValue || value}
         className={inputClassNames.build()}
         onChange={onChange}
         onFocus={onFocus}

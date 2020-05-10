@@ -82,7 +82,6 @@ type Props = {|
 
 export const StoreProvider = (props: Props) => {
   const [state, dispatch] = useReducer(reducers, init);
-  // console.log(state);
 
   return (
     <Store.Provider value={[state, dispatch]}>

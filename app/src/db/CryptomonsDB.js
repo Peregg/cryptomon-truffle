@@ -9,6 +9,7 @@ export default [
     specialDefense: 64,
     speed: 65,
     baseXp: 66,
+    moves: [[1, 101], [1, 102], [3, 103]]
   },
   {
     name: "Bulbizarre",
@@ -20,6 +21,7 @@ export default [
     specialDefense: 65,
     speed: 45,
     baseXp: 64,
+    moves: [[1, 301], [1, 302], [4, 303]]
   },
   {
     name: "Salamèche",
@@ -31,5 +33,6 @@ export default [
     specialDefense: 50,
     speed: 65,
     baseXp: 65,
+    moves: [[1, 201], [1, 202], [4, 203]],
   },
 ];
