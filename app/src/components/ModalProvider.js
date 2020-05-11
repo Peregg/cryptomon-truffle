@@ -2,10 +2,12 @@
 
 import React, { useState, useContext, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
+import { useSpring, animated } from 'react-spring'
 
 import socket, { SocketHandlers } from 'api/socket';
 
 import Button from 'fragments/Button';
+import StatDiffModal from 'fragments/modals/StatDiffModal';
 
 import { openModal, hideModal } from 'actions/modalActions';
 import { setArenaId, updatePlayerOne } from 'actions/battleActions';
@@ -106,18 +108,31 @@ const Modal = () => {
           </div>
         );
       case 6:
+        const [
+          newHealth,
+          newAttack,
+          newDefense,
+          newSpeAtk,
+          newSpeDef,
+          newSpeed,
+        ] = data.newStats;
+
+        const statDiff = {
+          health: newHealth - data.cryptomon.maxHealth,
+          attack: newAttack - data.cryptomon.attack,
+          defense: newDefense - data.cryptomon.defense,
+          specialAttack: newSpeAtk - data.cryptomon.specialAttack,
+          specialDefense: newSpeDef - data.cryptomon.specialDefense,
+          speed: newSpeed - data.cryptomon.speed,
+        };
+
         return (
-          <div className='modal-text'>
-            <p>{data.cryptomon.name} a gagné un niveau ! </p>
-            <Button handleClick={handleClaimLevelUp}>Monter d'un niveau !</Button>
-          </div>
-        );
-      case 7:
-        return (
-          <div className='modal-text'>
-            <p>Les statistiques de {data.cryptomon.name} ont augmenté.</p>
-            <Button handleClick={handleCloseModal}>Super !</Button>
-          </div>
+          <StatDiffModal
+            cryptomon={data.cryptomon}
+            newLevel={data.newLevel}
+            handleCloseModal={handleCloseModal}
+            statDiff={statDiff}
+          />
         );
       default:
         return 'coucou';

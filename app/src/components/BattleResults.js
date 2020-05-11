@@ -32,11 +32,11 @@ const BattleResults = ({ state: [ battleState ]}: Object) => {
 
   const history = useHistory();
 
-  useEffect(() => {
-    if (!playerOne || !playerTwo) {
-      history.push('/');
-    }
-  }, [playerOne, playerTwo]);
+  // useEffect(() => {
+  //   if (!playerOne || !playerTwo) {
+  //     history.push('/');
+  //   }
+  // }, [playerOne, playerTwo]);
 
   const winnerPlayer = battleState[winner];
   const looser = (winnerPlayer.id === playerOne.id && playerTwo) || playerOne;
@@ -65,7 +65,7 @@ const BattleResults = ({ state: [ battleState ]}: Object) => {
     const gas = await CryptomonContract.methods.levelUp(winnerPlayer.cmon.id, newLevel, xp, stats).estimateGas();
 
     const test = await CryptomonContract.methods.levelUp(winnerPlayer.cmon.id, newLevel, xp, stats).send({ from: activeAccount, gas });
-    handleGoHome();
+    dispatch(openModal(6, { cryptomon: winnerPlayer.cmon, newStats: stats, newLevel }));
   };
 
   const handleClaimXp = async () => {
