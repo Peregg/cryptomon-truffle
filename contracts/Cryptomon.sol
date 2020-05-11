@@ -13,7 +13,7 @@ contract CryptomonContract {
         uint xp;
     }
 
-    mapping(address => Cryptomon[]) cryptos;
+    mapping(address => uint[]) cryptos;
     Cryptomon[] public allCryptomons;
     uint256 public cryptomonInWorld;
 
@@ -34,7 +34,7 @@ contract CryptomonContract {
             0
         );
 
-        cryptos[msg.sender].push(_cmon);
+        cryptos[msg.sender].push(_cmon._id);
         allCryptomons.push(_cmon);
         cryptomonInWorld += 1;
     }
@@ -44,51 +44,36 @@ contract CryptomonContract {
         Cryptomon[] memory cryptomonArray = new Cryptomon[](myCryptoLength);
 
         for(uint i = 0; i < myCryptoLength; i++) {
-            cryptomonArray[uint(i)] = cryptos[msg.sender][uint(i)];
+            cryptomonArray[uint(i)] = allCryptomons[cryptos[msg.sender][i] - 1];
         }
 
         return cryptomonArray;
     }
 
     function tradeCryptomon(uint _id, address to) public {
-        require(msg.sender != to, 'You cannot send a Cryptomon to yourself');
+        require(msg.sender != to, 'You cannot send $-^plk;lpo Cryptomon to yourself');
+        require(allCryptomons[_id - 1].tamer == msg.sender, 'You do not own this cryptomon !');
 
-        Cryptomon memory cryptomonToTrade;
-        uint indexToRemove;
+        uint[] memory updatedCmons = new uint[](0);
+
         for(uint i = 0; i < cryptos[msg.sender].length; i++) {
-            if (cryptos[msg.sender][i]._id == _id) {
-                cryptomonToTrade = cryptos[msg.sender][i];
-                indexToRemove = i;
+            if (cryptos[msg.sender][i] != _id) {
+                updatedCmons[updatedCmons.length + 1] = cryptos[msg.sender][i];
             }
         }
 
-        require(cryptomonToTrade.tamer == msg.sender, 'The cryptomon you trying to send is not your property');
-
-        cryptos[to].push(cryptomonToTrade);
-        delete cryptos[msg.sender][indexToRemove];
-        // @TODO : Effacer de l'array de cryptomon le cryptomon envoyé
-    }
-
-    function findCryptomonIndex(uint searchedCmonId, address cryptomonOwner) internal view returns (uint index) {
-        for(uint i = 0; i < cryptos[cryptomonOwner].length; i++) {
-            if (cryptos[cryptomonOwner][i]._id == searchedCmonId) {
-                index = i;
-            }
-        }
+        cryptos[to].push(_id);
+        allCryptomons[_id - 1].tamer = to;
+        cryptos[msg.sender] = updatedCmons;
     }
 
     function claimXP(uint cryptomonId, uint xp) public {
-        cryptos[msg.sender][findCryptomonIndex(cryptomonId, msg.sender)].xp += xp;
-        allCryptomons[findCryptomonIndex(cryptomonId, msg.sender)].xp += xp;
+        allCryptomons[cryptomonId - 1].xp += xp;
     }
 
     function levelUp(uint cryptomonId, uint newLevel, uint xp, uint[] memory stats) public {
-        cryptos[msg.sender][findCryptomonIndex(cryptomonId, msg.sender)].level = newLevel;
-        cryptos[msg.sender][findCryptomonIndex(cryptomonId, msg.sender)].xp += xp;
-        cryptos[msg.sender][findCryptomonIndex(cryptomonId, msg.sender)].stats = stats;
-
-        allCryptomons[findCryptomonIndex(cryptomonId, msg.sender)].level = newLevel;
-        allCryptomons[findCryptomonIndex(cryptomonId, msg.sender)].xp += xp;
-        allCryptomons[findCryptomonIndex(cryptomonId, msg.sender)].stats = stats;
+        allCryptomons[cryptomonId - 1].level = newLevel;
+        allCryptomons[cryptomonId - 1].xp += xp;
+        allCryptomons[cryptomonId - 1].stats = stats;
     }
 }
