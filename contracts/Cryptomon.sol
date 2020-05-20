@@ -50,8 +50,12 @@ contract CryptomonContract {
         return cryptomonArray;
     }
 
+    function getCryptomon(uint index) public view returns(Cryptomon memory cmon) {
+        cmon = allCryptomons[index];
+    }
+
     function tradeCryptomon(uint _id, address to) public {
-        require(msg.sender != to, 'You cannot send $-^plk;lpo Cryptomon to yourself');
+        require(msg.sender != to, 'You cannot send a Cryptomon to yourself');
         require(allCryptomons[_id - 1].tamer == msg.sender, 'You do not own this cryptomon !');
 
         uint[] memory updatedCmons = new uint[](0);

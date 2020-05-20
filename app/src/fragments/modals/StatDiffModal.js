@@ -23,7 +23,6 @@ type Props = {
 };
 
 const StatDiffModal = ({ statDiff, cryptomon, newLevel, handleCloseModal }: Props) => {
-  console.log('jokokoiokj', statDiff);
   const [diff, setDiff] = useState({
     health: 0,
     attack: 0,

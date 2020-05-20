@@ -26,12 +26,17 @@ import battleReducer, {
   initialState as initialBattleState,
   type BattleState,
 } from 'reducers/battleReducer';
+import movesetReducer, {
+  initialState as initialMovesetState,
+  type MovesetStateType,
+} from 'reducers/movesetReducer';
 
 import type { CryptomonActionType, CryptomonActionEnumType } from 'actions/cryptomonsActions';
 import type { ActiveAccountType } from 'actions/activeAccountActions';
 import type { UserActionType, UserActionEnumType } from 'actions/userActions';
 import type { ModalActionType, ModalEnumType } from 'actions/modalActions';
 import type { BattleActionType, BattleActionEnumType } from 'actions/battleActions';
+import type { MovesetActionType, MovesetEnumType } from 'actions/movesetActions';
 import type { ReducerType } from 'types/reducerTypes';
 
 export type ActionType =
@@ -39,7 +44,8 @@ export type ActionType =
   | CryptomonActionType
   | ActiveAccountType
   | ModalActionType
-  | BattleActionType;
+  | BattleActionType
+  | MovesetActionType;
 
 type CombinedReducerStateType =
   & CryptomonStateType
@@ -51,6 +57,7 @@ type ActionEnumsType =
 | UserActionEnumType
 | ModalEnumType
 | BattleActionEnumType
+| MovesetEnumType
 | 'SET_ACTIVE_ACCOUNT';
 
 const reducers = (state, { type, payload }: ActionType) => {
@@ -58,6 +65,7 @@ const reducers = (state, { type, payload }: ActionType) => {
   const combinedReducers: ReducerType<CombinedReducerStateType, *> = {
     ...userReducer,
     ...cryptomonsReducer,
+    ...movesetReducer,
     ...activeAccountReducer,
     ...modalReducer,
     ...battleReducer,
@@ -72,6 +80,7 @@ const init = {
   ...initialUserState,
   ...initiaModalState,
   ...initialBattleState,
+  ...initialMovesetState,
 };
 
 export const Store = createContext<Object>(reducers);

@@ -10,7 +10,7 @@ type Props = {
   className?: string,
   children?: React$Element<*> | string,
   disabled?: boolean,
-  handleClick?: () => void,
+  handleClick?: Function,
 };
 
 const Button = ({ children, className = '', handleClick = () => {}, disabled }: Props) => {

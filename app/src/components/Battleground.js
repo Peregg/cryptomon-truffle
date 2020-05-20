@@ -12,11 +12,14 @@ import Carapuce from 'fragments/crytpomons/Carapuce';
 import Bulbizarre from 'fragments/crytpomons/Bulbizarre';
 import HealthBar from 'fragments/HealthBar';
 import BattleResults from 'components/BattleResults';
+import CryptomonMove from 'fragments/CryptomonMove';
 
 import attackDB from 'db/AttacksDB';
 import cryptomonDB from 'db/CryptomonsDB';
 
 import { updatePlayerOne, updatePlayerTwo } from 'actions/battleActions';
+
+import { getCryptomonKnownMoves } from 'utils/cryptomonsUtils';
 
 import socket, { SocketHandlers } from 'api/socket';
 
@@ -39,7 +42,7 @@ const Battleground = () => {
   const store = useContext(Store);
   const history = useHistory();
 
-  const [{ playerOne: initialPlayerOne, playerTwo: initialPlayerTwo, arenaId }, dispatch] = store;
+  const [{ playerOne: initialPlayerOne, playerTwo: initialPlayerTwo, arenaId, moveset }, dispatch] = store;
 
   const state = useState({
     playerOne: { ...initialPlayerOne },
@@ -132,10 +135,7 @@ const Battleground = () => {
 
   const MyCryptomon = cryptomonSvg[deburr(playerOne.cmon.name).toLowerCase()];
   const EnnemyCryptomon = cryptomonSvg[deburr(playerTwo.cmon.name).toLowerCase()];
-  const myAttackOptions = cryptomonDB
-    .find(({ name }) => name === playerOne.cmon.name).moves
-    .filter(([level, move]) => level <= playerOne.cmon.level)
-    .map((([_, move]) => attackDB[move]));
+  const myAttackOptions = moveset?.map(id => attackDB[id]) || getCryptomonKnownMoves(playerOne.cmon.name, playerOne.cmon.level);
 
   const renderMenuItems = () => {
     if (winner) {
@@ -157,7 +157,10 @@ const Battleground = () => {
     }
     return myAttackOptions.map(attack => (
       <div key={attack.name} className='battleground-menu-item' onClick={handleSelectMove(attack.id)}>
-        {attack.name}
+        <CryptomonMove
+          move={attack}
+          cryptomon={playerOne.cmon}
+        />
       </div>
     ));
   };

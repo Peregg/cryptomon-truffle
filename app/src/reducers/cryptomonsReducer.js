@@ -2,11 +2,9 @@
 
 import {
   GET_USER_CRYPTOMONS,
-  GET_USER_CRYPTOMONS_SUCCESS,
-  GET_USER_CRYPTOMONS_FAILURE,
+  GET_CRYPTOMON_DETAIL,
   CATCH_CRYPTOMON,
-  CATCH_CRYPTOMON_SUCCESS,
-  CATCH_CRYPTOMON_FAILURE,
+  CLEAR_CRYPTOMON_STATE,
 } from 'actions/cryptomonsActions';
 
 import { defaultCryptomon, type CryptomonType } from 'types/cryptomonTypes';
@@ -19,24 +17,35 @@ import {
 
 export const initialState = {
   cryptomons: null,
+  cryptomonDetail: null,
 };
 
 export type CryptomonStateType = {
   cryptomons: ?CryptomonType[],
+  cryptomonDetail: ?CryptomonType,
 };
 
-const defaultPayload = {
-  payload: {
-    status: STATUS_DEFAULT,
-    cryptomons: [defaultCryptomon],
-  },
-};
 
 const cryptomonsReducer: ReducerType<CryptomonStateType, CryptomonActionType> = {
-  [GET_USER_CRYPTOMONS]: (state: CryptomonStateType, { payload } = defaultPayload) => {
+  [GET_USER_CRYPTOMONS]: (state: CryptomonStateType, action: CryptomonActionType) => {
+    const { payload } = action;
     return {
       ...state,
-      cryptomons: payload.cryptomons || [],
+      cryptomons: payload.cryptomons,
+    };
+  },
+  [GET_CRYPTOMON_DETAIL]: (state: CryptomonStateType, action: CryptomonActionType) => {
+    const { payload } = action;
+    return {
+      ...state,
+      cryptomonDetail: payload.cryptomonDetail,
+    };
+  },
+  [CLEAR_CRYPTOMON_STATE]: (state: CryptomonStateType, action: CryptomonActionType) => {
+    const { payload } = action;
+    return {
+      ...state,
+      cryptomonDetail: null,
     };
   },
 };

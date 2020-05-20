@@ -5,19 +5,19 @@ import type { ActionType } from 'types/actionTypes';
 
 // actions type constants
 export const GET_USER_CRYPTOMONS = 'GET_USER_CRYPTOMONS';
-export const GET_USER_CRYPTOMONS_SUCCESS = 'GET_USER_CRYPTOMONS_SUCCESS';
-export const GET_USER_CRYPTOMONS_FAILURE = 'GET_USER_CRYPTOMONS_FAILURE';
 export const CATCH_CRYPTOMON = 'CATCH_CRYPTOMON';
-export const CATCH_CRYPTOMON_SUCCESS = 'CATCH_CRYPTOMON_SUCCESS';
-export const CATCH_CRYPTOMON_FAILURE = 'CATCH_CRYPTOMON_FAILURE';
+export const GET_CRYPTOMON_DETAIL = 'GET_CRYPTOMON_DETAIL';
+export const CLEAR_CRYPTOMON_STATE = 'CLEAR_CRYPTOMON_STATE';
 
 // action types
 export type CryptomonActionEnumType =
-  | 'GET_USER_CRYPTOMONS';
+  | 'GET_USER_CRYPTOMONS'
+  | 'CATCH_CRYPTOMON'
+  | 'GET_CRYPTOMON_DETAIL';
 
-type PayloadType = {
-  cryptomons?: CryptomonType[],
-};
+type PayloadType =
+  | { cryptomons: CryptomonType[] }
+  | { cryptomonDetail: CryptomonType };
 
 export type CryptomonActionType = ActionType<CryptomonActionEnumType, PayloadType>;
 
@@ -27,4 +27,15 @@ export const getUserCryptomon = (cryptomons: CryptomonType[]): CryptomonActionTy
   payload: {
     cryptomons,
   }
+});
+
+export const getCryptomonDetail = (cryptomonDetail: CryptomonType): CryptomonActionType => ({
+  type: GET_CRYPTOMON_DETAIL,
+  payload: {
+    cryptomonDetail,
+  },
+});
+
+export const clearState = () => ({
+  type: CLEAR_CRYPTOMON_STATE,
 });

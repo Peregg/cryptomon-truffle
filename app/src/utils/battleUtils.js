@@ -66,8 +66,8 @@ export const processStatusEffect = (fasterPlayer: string, props: Object): ?{ tar
   const statuses = [];
   const leech = (defendingCmon?.health || 0) * 1/8 < 1 && 1 || (defendingCmon?.health || 0) * 1/8;
 
-  Object.keys(defendingCmon.status).forEach(status => {
-    if (defendingCmon.status[status]) {
+  Object.keys(defendingCmon?.status || {}).forEach(status => {
+    if (defendingCmon?.status[status]) {
       statuses.push(status);
     }
   });
@@ -174,10 +174,10 @@ export const computeCmonMoveEffect = (attackEmitter: string, store: Object, debu
   } else if (category === 'attack') {
     const typeModifier = computeTypeModifier(moveType, defendingCmonType);
 
-    let damages;
     let efficiency;
     let attackWithModifer;
     let defenseWithModifier;
+    const stab = moveType === attackingCmon?.type && 2 || (1);
 
     if (moveClass === 'physical') {
 
@@ -191,7 +191,7 @@ export const computeCmonMoveEffect = (attackEmitter: string, store: Object, debu
       defenseWithModifier = specialDefense * (statModifiers[defendingCmon?.modifiers.specialDefense] || 1);
     }
 
-    damages = Math.round(((level*0.4+2)*(attackWithModifer||1)*power/((defenseWithModifier||1)*50)+2)*typeModifier);
+    const damages = Math.round(((level*0.4+2)*(attackWithModifer||1)*power/((defenseWithModifier||1)*50)+2)*typeModifier*stab);
 
     efficiency = (typeModifier > 1 && 'C\'est super efficace !')
       || (typeModifier < 1 && 'Ce n\'est pas très efficace...')

@@ -74,6 +74,7 @@ export const moves = {
       };
     },
     message: (user, foe) => `${user.cmon.name} de ${user.nickname} utilise Mimi-queue sur ${foe.cmon.name} ! Son attaque diminue !`,
+    description: (user) => `${user} agite son adorable queue devant l'adversaire pour lui faire baisser sa garde.`,
     power: null,
   },
   102: {
@@ -82,8 +83,9 @@ export const moves = {
     category: 'attack',
     type: 'water',
     effect: null,
-    power: 10,
+    power: 40,
     class: 'special',
+    description: (user) => `${user} projette de l\'eau sur son adversaire.`,
   },
   103: {
     id: 103,
@@ -104,6 +106,7 @@ export const moves = {
     },
     power: 20,
     class: 'special',
+    description: (user) => `${user} frappe l'adversaire en tournant sur soi-même.	Baisse la vitesse de l'adversaire d'un cran et retire les pièges du terrain.`,
   },
   201: {
     id: 201,
@@ -112,7 +115,8 @@ export const moves = {
     type: 'normal',
     effect: null,
     power: 40,
-    class: 'physical'
+    class: 'physical',
+    description: (user) => `${user} lacère son adversaire avec ses griffes acérées !`,
   },
   202: {
     id: 202,
@@ -132,6 +136,7 @@ export const moves = {
       };
     },
     message: (user, foe) => `${user.cmon.name} de ${user.nickname} utilise Rugissment sur ${foe.cmon.name} ! Son attaque diminue !`,
+    description: (user) => `${user} rugit gentîment, baisse l'attaque de l'adversaire d'un cran.`,
     power: null,
   },
   203: {
@@ -142,6 +147,7 @@ export const moves = {
     effect: null,
     message: null,
     power: 40,
+    description: (user) => `${user} lance une faible attaque de feu pouvant brûler l'adversaire.`,
   },
   301: {
     id: 301,
@@ -151,6 +157,7 @@ export const moves = {
     effect: null,
     power: 15,
     class: 'physical',
+    description: (user) => `${user} charge l'adversaire avec un violent plaquage.`,
   },
   302: {
     id: 302,
@@ -164,18 +171,20 @@ export const moves = {
           modifiers: {
             ...user.modifiers,
             attack: user.modifiers.attack += 1,
+            specialAttack: user.modifiers.specialAttack += 1,
           },
         },
         foe,
       };
     },
     message: (user, foe) => `${user.cmon.name} de ${user.nickname} utilise Croissance ! Son attaque augmente !`,
+    description: (user) => `${user} développe sa végétation, augmente son attaque et attaque spéciale d'un cran.`,
   },
   303: {
     id: 303,
-    name: 'Vampi-graine',
+    name: 'Vampigraine',
     category: 'effect',
-    type: 'bonus',
+    type: 'grass',
     effect: (user, foe) => {
       return {
         user: {
@@ -193,7 +202,18 @@ export const moves = {
       };
     },
     message: (user, foe) => `${foe.cmon.name} de ${foe.nickname} est vampirisé par ${user.cmon.name} de ${user.nickname} !`,
+    description: (user) => `${user} plante des graînes sangsues qui volent des PV à l'adversaire à chaque tour.`,
     power: null,
+  },
+  304: {
+    id: 304,
+    name: 'Fouet-liane',
+    category: 'attack',
+    type: 'grass',
+    effect: null,
+    message: null,
+    description: (user) => `${user} fouette l'ennemi avec de fines lianes.`,
+    power: 45,
   },
 };
 

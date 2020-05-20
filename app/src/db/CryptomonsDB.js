@@ -21,7 +21,7 @@ export default [
     specialDefense: 65,
     speed: 45,
     baseXp: 64,
-    moves: [[1, 301], [1, 302], [4, 303]]
+    moves: [[1, 301], [1, 302], [3, 304]],
   },
   {
     name: "Salamèche",

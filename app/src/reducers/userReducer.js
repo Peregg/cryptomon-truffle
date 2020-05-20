@@ -4,26 +4,24 @@ import {
   GET_USER,
   POST_USER,
   UPDATE_USER,
+  type UserActionType,
 } from 'actions/userActions';
 
 import {
   STATUS_DEFAULT,
 } from 'constants/statusConstants';
 
-import type { UserActionType } from 'actions/userActions';
 import { defaultUser, type UserType } from 'types/userTypes';
 import type { ReducerType } from 'types/reducerTypes';
 
 export const initialState = {
-  postUserStatus: STATUS_DEFAULT,
-  getUserStatus: STATUS_DEFAULT,
-  updateUserStatus: STATUS_DEFAULT,
   user: {
     id: '',
     nickname: '',
     address: '',
     avatar: '',
   },
+  error: null,
 };
 
 export type UserStateType = {

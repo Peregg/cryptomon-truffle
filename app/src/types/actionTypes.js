@@ -1,10 +1,10 @@
 // @flow
 
-export type ActionType<ActionType, PayloadType> = {
+export type ActionType<ActionType, PayloadType> = {|
   type: ActionType,
   payload: PayloadType,
-};
+|};
 
-export type PayloadlessActionType<ActionType> = {
+export type PayloadlessActionType<ActionType> = {|
   type: ActionType,
-};
+|};

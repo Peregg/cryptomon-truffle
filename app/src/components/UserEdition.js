@@ -8,7 +8,7 @@ import Button from 'fragments/Button';
 import wording from 'constants/wording';
 
 import { Store } from 'store';
-import { getUser, updateUser } from 'controllers/userController';
+import { updateUser } from 'controllers/userController';
 
 import 'styles/UserEdition.scss';
 
@@ -30,10 +30,6 @@ const UserEdition = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // if (activeAccount.length > 0 && !user) {
-    //   getUser(store);
-    // } @TODO : GARDER ÇA ?
-
     if (user) {
       setNickName(user.nickname);
       setAvatar(user.avatar);
@@ -78,8 +74,6 @@ const UserEdition = () => {
   }
 
   if (!loading) {
-    console.log('render', nickname, avatar);
-
     return (
       <div className='container'>
         <div className='container'>

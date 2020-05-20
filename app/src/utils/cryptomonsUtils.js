@@ -1,6 +1,7 @@
 // @flow
 import Web3 from "web3";
 
+import attackDB from 'db/AttacksDB';
 import cryptomonDB from 'db/CryptomonsDB';
 
 export const generateRandomCryptomon = async (): Promise<{ name: string, _type: string, dna: string, stats: number[]}> => {
@@ -42,3 +43,8 @@ export const computeCryptomonStats = (cryptomonIndex: number, dna: string, level
 
   return [health, attack, defense, specialAttack, specialDefense, speed];
 };
+
+export const getCryptomonKnownMoves = (cryptomonName: string, cryptomonLevel: string) => cryptomonDB
+  .find(({ name }) => name === cryptomonName).moves
+  .filter(([level, move]) => level <= cryptomonLevel)
+  .map((([_, move]) => attackDB[move]));

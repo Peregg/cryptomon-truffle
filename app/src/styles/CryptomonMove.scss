@@ -1,0 +1,61 @@
+.detail-move {
+  height: 45px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: solid 1px black;
+  margin: 10px 0;
+  border-radius: 26px;
+  width: 350px;
+  display: flex;
+  box-shadow: inset 0 -10px #00000014;
+
+  & .move-wording {
+    flex: 1;
+    padding: 15px;
+  }
+
+  & .type-icon {
+    margin: 0 10px;
+    width: 30px;
+    height: 30px;
+  }
+}
+
+.tooltip-container {
+  position: relative;
+
+  &:hover .tooltip {
+    visibility: visible;
+    opacity: 1;
+    transform: translate(0, 0);
+  }
+
+  & .move-description {
+    color: white;
+    padding: 10px;
+  }
+}
+
+.tooltip-container.no-tooltip {
+  &:hover .tooltip {
+    display: none;
+  }
+}
+
+.dropdown {
+  width: 0;
+  opacity: 0;
+  visibility: hidden;
+  position: absolute;
+  top: 0;
+  right: 0;
+  transition: right .3s ease, visibility .3s ease;
+}
+
+.dropdown.is-opened {
+  width: auto;
+  opacity: 1;
+  right: 355px;
+  visibility: visible;
+}

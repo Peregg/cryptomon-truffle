@@ -69,7 +69,8 @@ const BattleResults = ({ state: [ battleState ]}: Object) => {
   };
 
   const handleClaimXp = async () => {
-    const totalXP = winnerPlayer.cmon.xp + xp;
+    const totalXP = parseInt(winnerPlayer.cmon.xp, 10) + xp;
+
     const possibleNewLevel = Math.trunc(Math.cbrt(totalXP));
 
     if (possibleNewLevel > level) {

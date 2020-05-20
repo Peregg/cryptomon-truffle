@@ -13,6 +13,7 @@ export type CryptomonType = {|
   specialAttack: number,
   specialDefense: number,
   speed: number,
+  xp: number,
 |};
 export type CryptomonMoveType = Object;
 
@@ -27,4 +28,5 @@ export const defaultCryptomon = {
   attack: 0,
   defense: 0,
   speed: 0,
+  xp: 0,
 };

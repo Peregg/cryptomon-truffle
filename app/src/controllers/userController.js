@@ -1,5 +1,5 @@
 // @flow
-import requestResolver from 'api/requestResolver';
+import api from 'api/http';
 
 import {
   getUser as getUserAction,
@@ -12,7 +12,6 @@ import {
   type ModalActionType,
 } from 'actions/modalActions'
 
-const api = requestResolver('http://192.168.1.25:3001');
 
 export const getUser = async (store: [Object, Function]) => {
   const [{ activeAccount }, dispatch] = store;

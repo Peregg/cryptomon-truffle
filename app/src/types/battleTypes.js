@@ -24,7 +24,7 @@ export type FightingCryptomonType = {|
   selectedMove: ?MoveType,
 |};
 
-type MoveType = {
+export type MoveType = {
   level: number,
   name: string,
   category: string,
@@ -36,6 +36,7 @@ type MoveType = {
     duration: ?number,
   },
   power: ?number,
+  description: (cmonName: string) => string,
 };
 
 export type PlayerType = {|

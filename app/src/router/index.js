@@ -12,6 +12,7 @@ import UserEdition from 'components/UserEdition';
 import SelectForBattle from 'components/SelectForBattle';
 import Battleground from 'components/Battleground';
 import BattleResults from 'components/BattleResults';
+import CryptomonDetail from 'components/CryptomonDetail';
 
 const MainRouter = () => (
   <Switch>
@@ -27,6 +28,11 @@ const MainRouter = () => (
     />
     <Route
       exact
+      path='/cryptomons/:id'
+      component={CryptomonDetail}
+    />
+    <Route
+      exact
       path='/me'
       component={UserEdition}
     />
@@ -39,11 +45,6 @@ const MainRouter = () => (
       exact
       path='/arena/battle'
       component={Battleground}
-    />
-    <Route
-      exact
-      path='/arena/results'
-      component={BattleResults}
     />
   </Switch>
 );

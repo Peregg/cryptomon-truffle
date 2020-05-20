@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const requestResolver = (baseURL: string, headers: { [key: string]: string }) => {
+const httpProvider = (baseURL: string, headers: { [key: string]: string }) => {
   let config = {
     baseURL,
     timeout: 1000,
@@ -44,4 +44,6 @@ const requestResolver = (baseURL: string, headers: { [key: string]: string }) =>
   };
 };
 
-export default requestResolver;
+const api = httpProvider('http://192.168.1.25:3001');
+
+export default api;
