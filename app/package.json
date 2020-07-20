@@ -60,7 +60,7 @@
     "eslint-plugin-react-hooks": "^3.0.0",
     "flow-bin": "^0.122.0",
     "husky": "^4.2.5",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.19",
     "node-sass": "^4.13.1",
     "react-router-dom": "^5.1.2"
   }
